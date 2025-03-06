@@ -101,6 +101,6 @@ export const adminsignup = async (req,res)=>{
         }       
         )
     } catch (error) {
-       res.status(404).json(error.message) 
+        
     }
 }

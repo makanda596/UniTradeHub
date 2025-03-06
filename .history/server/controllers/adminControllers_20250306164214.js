@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt"
 import { adminGenerateToken } from "../utilis/adminGenerateToken.js"
-import { Admin } from "../models/adminModels.js"
-export const adminlogin = async(req,res)=>{
+export const adminsignup = async(req,res)=>{
 
     const {email,password}=req.body
     try {
@@ -77,30 +76,5 @@ export const adminprofile = (req, res) => {
     else{
         res.status(401).json({ message: "you need to log in" })
 
-    }
-}
-
-export const adminsignup = async (req,res)=>{
-    const {email,password}= req.body
-    try {
-        const existingadmin = await Admin.findOne({email})
-        if (existingadmin){
-            res.status(404).json({message:"email already exist"})
-        }
-        const hashpassword = await bcrypt.hash(password,10)
-
-        const admin = new Admin({
-            email, password:hashpassword
-        })
-        await admin.save()
-        res.status(200).json({message:"user signed up", 
-            admin:{
-                ...admin._doc,
-                password: undefined,
-            }
-        }       
-        )
-    } catch (error) {
-       res.status(404).json(error.message) 
     }
 }

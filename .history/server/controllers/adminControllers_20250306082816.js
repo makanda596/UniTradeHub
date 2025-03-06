@@ -1,7 +1,6 @@
 import bcrypt from "bcrypt"
-import { adminGenerateToken } from "../utilis/adminGenerateToken.js"
-import { Admin } from "../models/adminModels.js"
-export const adminlogin = async(req,res)=>{
+import { adminGenerateToken } from "../utilis/adminGenerateToken"
+export const adminsignup = async(req,res)=>{
 
     const {email,password}=req.body
     try {
@@ -43,9 +42,7 @@ export const updateAdmin = async (req,res)=>{
         }
         //update the email 
         const adminEmail = await Admin.find({email})
-        if (adminEmail && adminEmail._id.toString() !== id) {
-            return res.status(400).json({ message: "Email already exists. Please use a different one." });
-        }
+        if(adminEmail && adminEmail._id.toString() !== id )
 
             if(password){
             let updatedfields = {...req.body}
@@ -62,45 +59,6 @@ export const updateAdmin = async (req,res)=>{
 
 
     } catch (error) {
-        console.error("❌ Update Error:", error);
-        res.status(500).json({ error: "Internal server error", message: error.message });
-    }
-}
-
-export const adminprofile = (req, res) => {
-    if(req.session.admin){
-        return res.send( {
-            message:"admin details",
-            admin:req.session.admin
-        })
-    }
-    else{
-        res.status(401).json({ message: "you need to log in" })
-
-    }
-}
-
-export const adminsignup = async (req,res)=>{
-    const {email,password}= req.body
-    try {
-        const existingadmin = await Admin.findOne({email})
-        if (existingadmin){
-            res.status(404).json({message:"email already exist"})
-        }
-        const hashpassword = await bcrypt.hash(password,10)
-
-        const admin = new Admin({
-            email, password:hashpassword
-        })
-        await admin.save()
-        res.status(200).json({message:"user signed up", 
-            admin:{
-                ...admin._doc,
-                password: undefined,
-            }
-        }       
-        )
-    } catch (error) {
-       res.status(404).json(error.message) 
+        
     }
 }

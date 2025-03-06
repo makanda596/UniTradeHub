@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser"
 import UserRoutes from './routes/UserRoutes.js'
 import session from 'express-session'
 import postRoutes from "./routes/postRoutes.js"
-import adminRoutes from './routes/adminRoutes.js'
+
 const app = express()
 dotenv.config()
 //middleware
