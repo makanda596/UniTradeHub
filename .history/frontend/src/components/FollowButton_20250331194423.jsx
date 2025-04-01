@@ -3,10 +3,11 @@ import { FollowStore } from "../utilis/follow";
 import axios from "axios";
 
 const FollowButton = ({ userId }) => {
-    const API_BASE_URL = "http://localhost:5000/follow"; // Change this to your backend URL
+    const FOLLOW_API = import.meta.env.VITE_FOLLOW_API
+
 
     // const toggleFollow = async () => {
-    //     if (isFollowing) {
+    //     if (isFollowing) { 
     //         await handleUnfollow(userId);
     //     } else {
     //         // await handleFollow(userId);
@@ -16,7 +17,7 @@ const FollowButton = ({ userId }) => {
     const handdleFollowfunction = async ()=>{
         try {
             const token = localStorage.getItem("token")
-            const response = await axios.get(`${API_BASE_URL}/following`, {
+            const response = await axios.get(`${FOLLOW_API}/following`, {
                            headers: { Authorization: `Bearer ${token}` },
                        });
                        console.log(response.data)

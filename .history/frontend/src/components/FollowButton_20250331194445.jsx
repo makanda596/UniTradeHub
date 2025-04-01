@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 
 const FollowButton = () => {
-    const API_BASE_URL = "http://localhost:5000/follow"; // Change this to your backend URL
+    const FOLLOW_API = import.meta.env.VITE_FOLLOW_API
 
     // const toggleFollow = async () => {
     //     if (isFollowing) {
