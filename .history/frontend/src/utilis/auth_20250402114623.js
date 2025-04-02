@@ -20,7 +20,7 @@ export const useAuthStore = create((set,get) => ({
     signup: async (username, email, phoneNumber, password, gender) => {
         set({ isLoading: true, error: null });
         try {
-            const response = await axios.post('https://unitradehubback.onrender.com/auth/signup', { username, email, phoneNumber, password,  gender});
+            const response = await axios.post(`${USER_API}/auth/signup`, { username, email, phoneNumber, password,  gender});
             set({ user: response.data.user, isLoading: false, isAuthenticated: true });
             get().connectSocket();
         } catch (error) {
