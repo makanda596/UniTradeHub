@@ -19,7 +19,7 @@ export default function ChatCard({ user }) {
             const fetchUser = async () => {
                 try {
                     const token = localStorage.getItem("token")
-                    const response = await axios.get(`https://unitradehubback.onrender.com/auth/${recieverId}`,{
+                    const response = await axios.get(`${import.meta.env.VITE_CONVERSATION}/${recieverId}`,{
                         headers:{Authorization:`Bearer ${token}`}
                     });
                     setUserinfo(response.data);
