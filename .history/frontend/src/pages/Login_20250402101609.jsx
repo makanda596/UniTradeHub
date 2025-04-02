@@ -1,13 +1,14 @@
 import { useState } from "react";
 import market from "../assets/market.avif";
-import [useAuthStore} from '../utilis/auth.js'
-import { response } from "express";
+import {useAuthStore} from '../utilis/auth.js'
+import axios from 'axios'
 const Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
     const [showPassword, setShowPassword] = useState(false);
-    const {login} = useAuthStore()
+    const {login,error} = useAuthStore()
+
+    axios.defaults.withCredentials = true;
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
@@ -15,21 +16,17 @@ const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setError("");
 
         if (!email || !password) {
-            setError("Please fill in all fields");
+            error("Please fill in all fields");
             return;
         }
         try{
             await login(email, password)
             window.location.href='/home'
-            console.log(response.data)
         }catch(error){
-            setError(error.response.data.message)
-            console.log(error.response.data.message)
+            console.log(error.response ? error.response.data.message : 'Login failed');
         }
-    
     };
 
     return (
@@ -78,7 +75,7 @@ const Login = () => {
                     </button>
                 </form>
                 <div className="mt-4 text-center flex flex-col space-y-2">
-                    <a href="/forgot-password" className="text-white hover:underline">Forgot Password?</a>
+                    <a href="/ForgotPassword" className="text-white hover:underline">Forgot Password?</a>
                     <a href="/signup" className="text-white hover:underline">Dont Have an Account ? Sign up</a>
                 </div>
             </div>

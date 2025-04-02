@@ -18,7 +18,7 @@ dotenv.config()
 
 app.use(cors(
     {
-        origin:"https://unitradehub-kesf.onrender.com",
+        origin:"http://localhost:5173",
         // origin: 'https://unitradehub-kesf.onrender.com', 
         credentials: true,
     }

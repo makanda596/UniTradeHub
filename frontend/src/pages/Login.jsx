@@ -27,7 +27,6 @@ const Login = () => {
         }catch(error){
             console.log(error.response ? error.response.data.message : 'Login failed');
         }
-    localStorage.setItems("token")
     };
 
     return (
