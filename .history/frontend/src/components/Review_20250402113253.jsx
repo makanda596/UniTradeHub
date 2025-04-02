@@ -26,7 +26,7 @@ const Review = ({ followedId, onClose }) => {
             }
 
             const response = await axios.post(
-                `https://unitradehubback.onrender.com/reviews/postReview/${followedId}`,
+                `https://unitradehubback.onrender.com/posts/postReview/${followedId}`,
                 {
                     text: reviewText
                 },

@@ -20,7 +20,7 @@ const Dashboard = ({ user, userId }) => {
     const countPosts = async () => {
         try {
 
-            const response = await axios.get(`https://unitradehubback.onrender.com/posts/countposts/${userId}`);
+            const response = await axios.get(`https://unitradehubback.onrender.com/countposts/${userId}`);
             setCount(response.data);
         } catch (error) {
             setError(error.message);

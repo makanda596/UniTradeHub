@@ -22,7 +22,7 @@ const Myposts = () => {
         const fetchUserData = async () => {
             try {
                 const response = await axios.get(
-                    `https://unitradehubback.onrender.com/auth/userposts/${userId}`
+                    `https://unitradehubback.onrender.com/posts/userposts/${userId}`
                 );
                 setUser(response.data);
                 setPosts(response.data.posts || []);

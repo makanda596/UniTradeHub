@@ -107,7 +107,7 @@ const Settings = () => {
             };
 
             const response = await axios.put(
-                `https://unitradehubback.onrender.com/auth/update/${user?._id}`,
+                `${import.meta.env.VITE_BACKEND_URL}/update/${user?._id}`,
                 updatedData,
                 { headers: { Authorization: `Bearer ${token}` } }
             );

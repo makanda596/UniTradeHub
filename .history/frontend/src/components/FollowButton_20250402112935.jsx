@@ -17,7 +17,7 @@ const FollowButton = ({ userId }) => {
                 }
 
                 const response = await axios.get(
-                    `https://unitradehubback.onrender.com/follow/checkFollowStatus/${userId}`,
+                    `https://unitradehubback.onrender.com/checkFollowStatus/${userId}`,
                     { headers: { Authorization: `Bearer ${token}` } }
                 );
 

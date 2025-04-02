@@ -47,7 +47,7 @@ const ProfilePage = ({ user, logout, userId }) => {
         setCountReviews(reviewsResponse.data);
 
         // Fetch post count
-        const postsResponse = await axios.get(`https://unitradehubback.onrender.com/posts/countposts/${userId}`);
+        const postsResponse = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/countposts/${userId}`);
         setCountPosts(postsResponse.data.postCount || 0);
 
       } catch (error) {
