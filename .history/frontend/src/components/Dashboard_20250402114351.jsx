@@ -36,7 +36,7 @@ const Dashboard = ({ user, userId }) => {
                 return;
             }
 
-            const response = await axios.get('https://unitradehubback.onrender.com/reviews/countReviews', {
+            const response = await axios.get('https://unitradehubback.onrender.com/auth/countReviews, {
                 headers: { Authorization: `Bearer ${token}` },
             });
             setCountReviews(response.data);
