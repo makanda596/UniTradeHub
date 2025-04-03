@@ -45,7 +45,7 @@ export const useAuthStore = create((set,get) => ({
     login: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/login`, { email, password });
+            const response = await axios.post(`${USER_API}/auth/login`, { email, password });
             localStorage.setItem("token", response.data.token);
             console.log(USER_API)
             set({ user: response.data.user, isAuthenticated: true, isLoading: false, error: null });
@@ -102,7 +102,7 @@ export const useAuthStore = create((set,get) => ({
                 return;
             }
 
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/check-auth`, {
+            const response = await axios.get(`${USER_API}/auth/check-auth`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             });

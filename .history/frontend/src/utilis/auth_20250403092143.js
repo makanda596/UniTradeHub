@@ -102,7 +102,7 @@ export const useAuthStore = create((set,get) => ({
                 return;
             }
 
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/check-auth`, {
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL /auth/check-auth`, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true
             });
