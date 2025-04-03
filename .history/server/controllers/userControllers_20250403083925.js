@@ -374,9 +374,8 @@ export const userprofile = async(req,res)=>{
     }
 }
 export const usergetposts = async (req, res) => {
-    const { id } = req.params
     try {
-        const user = await User.findOne({_id:id}).populate("posts", "productName description createdAt")
+        const user = await User.findOne(req.user.id).populate("posts", "productName description createdAt")
         if (!user) {
             res.status(400).json({ message: "user not found" })
         }
@@ -388,7 +387,8 @@ export const usergetposts = async (req, res) => {
 
 export const countUserPost = async (req,res)=>{
     try {
-        const postCount = await Post.countDocuments({ createdBy: req.user.id });
+        const { id } = req.params;
+        const postCount = await Post.countDocuments({ createdBy: id });
 
         res.status(200).json({ success: true, postCount });
     } catch (error) {

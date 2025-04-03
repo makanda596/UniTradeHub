@@ -19,7 +19,7 @@ router.post('/resendcode', EmailVerificationResend)
 router.get('/getUsers', verifyToken, getUsers)
 router.get('/check-auth', verifyToken, checkAuth)
  router.get("/userposts/:id", usergetposts );
-router.get('/countposts',verifyToken, countUserPost); 
+router.get('/countposts', countUserPost); 
 router.delete("/delete/:postId", verifyToken , deletePost);
 // router.get('/getUser', getUser)
 router.get('/profile', verifyToken,profile)

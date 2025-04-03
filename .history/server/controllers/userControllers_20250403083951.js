@@ -388,7 +388,8 @@ export const usergetposts = async (req, res) => {
 
 export const countUserPost = async (req,res)=>{
     try {
-        const postCount = await Post.countDocuments({ createdBy: req.user.id });
+        const { id } = req.params;
+        const postCount = await Post.countDocuments({ createdBy: id });
 
         res.status(200).json({ success: true, postCount });
     } catch (error) {
