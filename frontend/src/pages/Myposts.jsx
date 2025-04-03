@@ -22,7 +22,7 @@ const Myposts = () => {
         const fetchUserData = async () => {
           try{
             const token = localStorage.getItem("token")
-              const response = await axios.get("http://localhost:5000/auth/userposts",{
+              const response = await axios.get(`$${import.meta.env.VITE_BACKEND_URL}/auth/userposts`,{
                 headers:{Authorization :`Bearer ${token}`}
               })
                 setUser(response.data);
