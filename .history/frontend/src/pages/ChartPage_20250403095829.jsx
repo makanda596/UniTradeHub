@@ -71,7 +71,7 @@ const ChatPage = () => {
             }
 
             await axios.post(
-                `${import.meta.env.VITE_CONVERSATION}/chart/sendmessage`,
+                `${import.meta.env.VITE_CONVERSATION}/sendmessage`,
                 formData,
                 {
                     headers: {
