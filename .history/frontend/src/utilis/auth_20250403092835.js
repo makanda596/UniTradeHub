@@ -20,7 +20,7 @@ export const useAuthStore = create((set,get) => ({
     signup: async (username, email, phoneNumber, password, gender) => {
         set({ isLoading: true, error: null });
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/signup`, { username, email, phoneNumber, password,  gender});
+            const response = await axios.post(`${USER_API}/auth/signup`, { username, email, phoneNumber, password,  gender});
             set({ user: response.data.user, isLoading: false, isAuthenticated: true });
             get().connectSocket();
         } catch (error) {
@@ -33,7 +33,7 @@ export const useAuthStore = create((set,get) => ({
     adminLogin: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/adminLogin`, { email, password });
+            const response = await axios.post(`${USER_API}/auth/adminLogin`, { email, password });
             set({ admin: response.data.admin, isAuthenticated: true, isLoading: false, error: null });
         } catch (error) {
             set({ error: error.response?.data?.message || "Error logging in", isLoading: false });
@@ -59,7 +59,7 @@ export const useAuthStore = create((set,get) => ({
     // Logout 
     logout: async () => {
         try {
-            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, null, { withCredentials: true });
+            await axios.post('https://unitradehubback.onrender.com/auth/logout', null, { withCredentials: true });
             localStorage.removeItem("token");
             set({ user: null, isAuthenticated: false, isCheckingAuth: false });
             get().disconnectSocket();
@@ -73,7 +73,7 @@ export const useAuthStore = create((set,get) => ({
        set({ isLoading: true, error: null });
 
         try {
-            const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/resendcode`, { email })
+            const response = await axios.post('https://unitradehubback.onrender.com/auth/resendcode', { email })
            set({response:response.data ,})
         } catch (error) {
             console.log(error)
@@ -83,7 +83,7 @@ export const useAuthStore = create((set,get) => ({
     forgotPassword: async (email) => {
         set({ isLoading: true, error: null });
          try {
-             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/password`, { email });
+             const response = await axios.post('https://unitradehubback.onrender.com/auth/password', { email });
             set({ message: response.data.message, isLoading: false });
         } catch (error) {
             set({ error: error.response?.data?.message || "Error sending reset password email", isLoading: false });
@@ -132,7 +132,7 @@ export const useAuthStore = create((set,get) => ({
         const { user } = get();
         if (!user || get().socket?.connected) return;
 
-        const socket = io(`${import.meta.env.VITE_BACKEND_URL}`, {
+        const socket = io({import.meta.env.VITE_BACKEND_URL}, {
             query: {
                 userId: user._id,
             },

@@ -39,7 +39,7 @@ const Settings = () => {
                 return;
             }
 
-            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/profile`, {
+            const response = await axios.get('https://unitradehubback.onrender.com/auth/profile', {
                 headers: { Authorization: `Bearer ${token}` },
             });
 
