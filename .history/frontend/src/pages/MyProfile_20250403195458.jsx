@@ -157,7 +157,7 @@ const ProfilePage = ({ user, logout, userId }) => {
                 </button>
 
                 <Link
-                  to='/Myposts'
+                  to={`/Myposts/${userId}`}
                   className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition"
                 >
                   <FaShoppingCart className="text-lg" />

@@ -85,7 +85,7 @@ const CreatePost = ({ onClose, onPostCreated }) => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    // e.preventDefault()
     setError("");
     setSuccess("");
 
@@ -111,7 +111,7 @@ const CreatePost = ({ onClose, onPostCreated }) => {
       };
       const token = localStorage.getItem("token");
 
-      const response = await axios.post( 
+      const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/posts/createpost`,
         postData, // This is your request body
         {
@@ -122,8 +122,9 @@ const CreatePost = ({ onClose, onPostCreated }) => {
         }
       );
 
-console.log(response)
+
       setSuccess("Post created successfully!");
+      alert("Post created successfully!") 
       // Reset form
       setFormData({
         productName: "",

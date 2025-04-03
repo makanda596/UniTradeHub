@@ -137,7 +137,7 @@ const AllPosts = ({ user }) => {
                                 <Link to={`/Onepost/${post.category}/${post._id}`}>
                                     <div>
                                         <h3 className="text-md font-semibold text-gray-800">{post.productName}</h3>
-                                        <div className="text-gray-600">{post.description.length > 60 ? (<p>{post.description.slice(0, 60)}...<span className="text-blue-500">see more</span></p>) : (<p>{post.description}</p>)}</div>
+                                        <div className="text-gray-600">{post.description.length > 60 ? (<p>{post.description.slice(0, 60)}...<span className="text-blue-500">see more</span></p>) : (<>{post.description}</>)}</div>
                                     </div>
 
                                     <img src={post.image} alt="Post" className="w-full -ml-0 h-96 object-cover " />

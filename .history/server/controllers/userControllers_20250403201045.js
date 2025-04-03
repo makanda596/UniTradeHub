@@ -374,22 +374,17 @@ export const userprofile = async(req,res)=>{
     }
 }
 export const usergetposts = async (req, res) => {
+    const { id } = req.user.id
     try {
-        const id = req.user.id; // Correct extraction of user ID
-
-        // Find the user by ID and populate the "posts" field
-        const user = await User.findById(id).populate("posts", "productName image description createdAt").sort({createdAt:-1});
-
+        const user = await User.find({createdBy:id}).populate("posts", "productName image description createdAt")
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            res.status(400).json({ message: "user not found" })
         }
-
-        res.status(200).json(user.posts); // Return only the user's posts
+        res.status(200).json(user)
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.json(error.message)
     }
-};
-
+}
 
 export const countUserPost = async (req,res)=>{
     try {

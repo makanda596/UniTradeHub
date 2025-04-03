@@ -22,11 +22,10 @@ const Myposts = () => {
         const fetchUserData = async () => {
           try{
             const token = localStorage.getItem("token")
-              const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/userposts`,{
+              const response = await axios.get(`$${import.meta.env.VITE_BACKEND_URL}/auth/userposts`,{
                 headers:{Authorization :`Bearer ${token}`}
               })
                 setUser(response.data);
-                console.log(response.data)
                 setPosts(response.data.posts || []);
             } catch (error) {
                 setError(error.message);

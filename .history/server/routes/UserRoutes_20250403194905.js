@@ -18,12 +18,12 @@ router.post("/email-verification", EmailVerification)
 router.post('/resendcode', EmailVerificationResend)
 router.get('/getUsers', verifyToken, getUsers)
 router.get('/check-auth', verifyToken, checkAuth)
-router.get("/userposts", verifyToken, usergetposts );
+ router.get("/userposts/:id",verifyToken, usergetposts );
 router.get('/countposts',verifyToken, countUserPost); 
 router.delete("/delete/:postId", verifyToken , deletePost);
 // router.get('/getUser', getUser)
 router.get('/profile', verifyToken,profile)
-router.put('/update/:id' ,updateUser) 
+router.put('/update/:id' ,updateUser)  
 router.delete('/delete/:id', deleteUser)
 router.get('/profile/:id', userprofile)
 router.post("/addcart/:postId", verifyToken, addToCart);

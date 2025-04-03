@@ -97,7 +97,7 @@ function App() {
           <Route path="/chart" element={<ProtectedRoute><ChartPage /></ProtectedRoute>} />
           <Route path="/Profile/:userId" element={<ProtectedRoute><Profile  /></ProtectedRoute>} />
           <Route path="/Chart/:recieverId" element={<ProtectedRoute><Chart user={user} /></ProtectedRoute>} />
-          <Route path="/Myposts" element={<ProtectedRoute><Myposts user={user} userId={user?._id}/></ProtectedRoute>} />
+          <Route path="/Myposts/:userId" element={<ProtectedRoute><Myposts user={user} userId={user?._id}/></ProtectedRoute>} />
 
           <Route path="/profile" element={<ProtectedRoute><MyProfile user={user} logout={logout} userId={user?._id} /></ProtectedRoute>} />
           <Route path="/Settings" element={<ProtectedRoute><Settings user={user} logout={logout} /></ProtectedRoute>} />

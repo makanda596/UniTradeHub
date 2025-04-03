@@ -84,8 +84,8 @@ const CreatePost = ({ onClose, onPostCreated }) => {
     };
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const handleSubmit = async () => {
+    // e.preventDefault()
     setError("");
     setSuccess("");
 

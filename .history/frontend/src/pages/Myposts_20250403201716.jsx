@@ -26,7 +26,7 @@ const Myposts = () => {
                 headers:{Authorization :`Bearer ${token}`}
               })
                 setUser(response.data);
-                console.log(response.data)
+                console.log(response.data.posts)
                 setPosts(response.data.posts || []);
             } catch (error) {
                 setError(error.message);
