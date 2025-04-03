@@ -138,7 +138,7 @@ export const useAuthStore = create((set,get) => ({
             },
         });
         socket.connect();
-
+// fmvgovmgombobmgbg
         set({ socket: socket });
         socket.on("server_message" ,(data)=>{
             console.log(data)

@@ -95,7 +95,7 @@ function App() {
           <Route path='EmailVerification' element={<EmailVerification user={user}/>}/>
           <Route path="/post" element={<ProtectedRoute><Post /></ProtectedRoute>} />
           <Route path="/chart" element={<ProtectedRoute><ChartPage /></ProtectedRoute>} />
-          <Route path="/Profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+          <Route path="/Profile/:userId" element={<ProtectedRoute><Profile  /></ProtectedRoute>} />
           <Route path="/Chart/:recieverId" element={<ProtectedRoute><Chart user={user} /></ProtectedRoute>} />
           <Route path="/Myposts" element={<ProtectedRoute><Myposts user={user} /></ProtectedRoute>} />
 
