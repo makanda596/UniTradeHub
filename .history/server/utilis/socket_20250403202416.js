@@ -7,7 +7,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
         cors: {
-       origin:"https://unitradehub-kesf.onrender.com",
+       origin:"https://unitradehub-kesf.onrender.com"
       // Change this if frontend URL is different
         credentials: true,
     },
