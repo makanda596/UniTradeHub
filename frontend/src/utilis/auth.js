@@ -134,7 +134,7 @@ export const useAuthStore = create((set,get) => ({
 
         const socket = io(`${import.meta.env.VITE_BACKEND_URL}`, {
             query: {
-                userId: user._id,
+                userId: user._id, 
             },
         });
         socket.connect();
