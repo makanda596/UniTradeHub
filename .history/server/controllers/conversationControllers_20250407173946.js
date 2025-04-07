@@ -20,7 +20,7 @@ export const getConversation = async (req, res) => {
         if (!conversation) {
             return res.status(404).json({ message: "No conversation found" });
         }
-// dnckdnc
+
 
         res.status(200).json({ message: "Conversation found", conversation });
     } catch (error) {
