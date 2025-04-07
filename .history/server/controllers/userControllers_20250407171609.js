@@ -4,7 +4,7 @@ import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import { Post } from "../models/postModel.js";
 import { sendEmail, sendRestPasswordConfirmationEmail,sendConfirmationEmail , sendEmailVerification } from "../utilis/sendEmail.js";
-import {Scam} from "../models/scam.js";
+import scam from "../models/scam.js";
 // import { userGenerateTokenAndSetCookie } from "../utilis/userGenerateToken.js";
 export  const signup = async (req,res)=>{
     try {
@@ -544,35 +544,32 @@ export const resetPassword = async (req, res) => {
 };
 
 
-export const reportScammer = async (req, res) => {
-    const { reportedId } = req.params;
-    const userId = req.user.id;
-
+export const reportScammer = async (req,res)=>{
+    const { reportedId }= req.params;
+    const userId = req.user.id
     try {
-        const reportedUser = await User.findById(reportedId);
-        if (!reportedUser) {
-            return res.status(400).json({ message: "User not found" });
+        const reportId= await User.findById({_id:reportedId})
+        if(!reportId){
+            return res.status(400).json({message:"user not found"})
+        }
+        const useId = await User.findById(userId)
+        if(!useId){
+            return res.status(400).json({message:"please log in first"})
+        }
+        const reportExist = await scam.findOne({
+            participants: { $all :[userId, reportedId]}
+        }        )
+        if(reportExist){
+            return res.json({message:"you have already reported the seller"})
         }
 
-        const reportingUser = await User.findById(userId);
-        if (!reportingUser) {
-            return res.status(400).json({ message: "Please log in first" });
-        }
+        const reports = new Scam({
+            reportedId,userId
+        })
 
-        const reportExist = await Scam.findOne({
-            participants: { $all: [userId, reportedId] }
-        });
-
-        if (reportExist) {
-            return res.status(200).json({ message: "Report already exists", report: reportExist });
-        }
-
-        const newReport = await Scam.create({
-            participants: [userId, reportedId]
-        });
-
-        res.status(200).json({ message: "Successfully made a scam report", report: newReport });
+        await reports.save()
+        res.status(200).json({message:"succesfully made a report scam", reports})
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(400).json(error.message)
     }
-};
+}

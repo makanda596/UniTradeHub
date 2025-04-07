@@ -545,7 +545,7 @@ export const resetPassword = async (req, res) => {
 
 
 export const reportScammer = async (req, res) => {
-    const { reportedId } = req.params;
+    const { _id:reportedId } = req.params;
     const userId = req.user.id;
 
     try {

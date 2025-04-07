@@ -129,7 +129,7 @@ const CategoryDetails = () => {
                 )}
 
                 {/* Posts Grid */}
-                {!loading && posts.length > 0 && (
+                {!loading && posts.length > 6 && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {posts.map((post,index) => (
                             <div key={index} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition duration-300 border border-gray-100">

@@ -6,7 +6,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { FaArrowLeft, FaTag, FaRegClock, FaMapMarkerAlt, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 import Post from "../components/Post.jsx";
-import Navbar from '../components/Navbar.jsx'
 
 
 const CategoryDetails = () => {
@@ -26,7 +25,7 @@ const CategoryDetails = () => {
             try { 
                 const token = localStorage.getItem("token");
                 const response = await axios.get(
-                    `${import.meta.env.VITE_BACKEND_URL}/posts/posts?category=${categoryName}`,
+                    `${import.meta.env.VITE_POST_API}/posts/posts?category=${categoryName}`,
                     {
                         headers: { Authorization: `Bearer ${token}` }
                     });
@@ -51,13 +50,11 @@ const CategoryDetails = () => {
     };
 
     return (
-        <div>
-            <Navbar/>
-        <div className="min-h-screen bg-gray-50 ">
-                <div className="container mx-auto px-0 lg:px-10 py-8 ">
+        <div className="min-h-screen bg-gray-50">
+            <div className="container mx-auto px-0 lg:px-10 py-8">
                 {/* Breadcrumb Navigation */}
                 <div className="mb-8">
-                        <div className="flex items-center text-sm text-gray-600 mb-2 mt-8">
+                    <div className="flex items-center text-sm text-gray-600 mb-2">
                         <Link to="/" className="hover:text-blue-600 flex items-center">
                             <FaArrowLeft className="mr-1" /> Home
                         </Link>
@@ -131,8 +128,8 @@ const CategoryDetails = () => {
                 {/* Posts Grid */}
                 {!loading && posts.length > 0 && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {posts.map((post,index) => (
-                            <div key={index} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition duration-300 border border-gray-100">
+                        {posts.map((post) => (
+                            <div key={post._id} className="bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition duration-300 border border-gray-100">
                                 {/* Post Image */}
                                 <div className="relative h-48 overflow-hidden">
                                     <img
@@ -151,7 +148,7 @@ const CategoryDetails = () => {
                                     <div className="flex items-center gap-3 mb-2">
                                         <img
                                             src={post?.createdBy?.profilepic || '/default-profile.png'}
-                                            alt=""
+                                            alt={post?.createdBy?.username}
                                             className="w-8 h-8 rounded-full border-2 border-blue-400 object-cover"
                                         />
                                         <div>
@@ -190,7 +187,6 @@ const CategoryDetails = () => {
                     </div>
                 )}
             </div>
-        </div>
         </div>
     );
 };

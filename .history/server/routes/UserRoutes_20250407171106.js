@@ -22,7 +22,7 @@ router.get("/userposts", verifyToken, usergetposts );
 router.get('/countposts',verifyToken, countUserPost); 
 router.delete("/delete/:postId", verifyToken , deletePost);
 // router.get('/getUser', getUser)s
-router.post("/reportScammer/:reportedId",verifyToken, reportScammer)
+router.post("/reportScammer",verifyToken, reportScammer)
 router.get('/profile', verifyToken,profile)
 router.put('/update/:id' ,updateUser) 
 router.delete('/delete/:id', deleteUser)

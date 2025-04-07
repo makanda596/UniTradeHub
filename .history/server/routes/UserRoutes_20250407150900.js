@@ -1,6 +1,6 @@
 import express from 'express'
 import {
-  signup, login, logout, getUsers, addToCart, removeFromCart, getCart, reportScammer,
+    signup, login, logout, getUsers, addToCart, removeFromCart, getCart,
   profile, updateUser, deleteUser, checkAuth, EmailVerification, EmailVerificationResend,
       userprofile, usergetposts, countUserPost,deletePost,resetPassword,
       forgotPassword} from '../controllers/userControllers.js'
@@ -21,8 +21,7 @@ router.get('/check-auth', verifyToken, checkAuth)
 router.get("/userposts", verifyToken, usergetposts );
 router.get('/countposts',verifyToken, countUserPost); 
 router.delete("/delete/:postId", verifyToken , deletePost);
-// router.get('/getUser', getUser)s
-router.post("/reportScammer/:reportedId",verifyToken, reportScammer)
+// router.get('/getUser', getUser)
 router.get('/profile', verifyToken,profile)
 router.put('/update/:id' ,updateUser) 
 router.delete('/delete/:id', deleteUser)

@@ -6,7 +6,6 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { FaArrowLeft, FaTag, FaRegClock, FaMapMarkerAlt, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 import Post from "../components/Post.jsx";
-import Navbar from '../components/Navbar.jsx'
 
 
 const CategoryDetails = () => {
@@ -51,13 +50,11 @@ const CategoryDetails = () => {
     };
 
     return (
-        <div>
-            <Navbar/>
-        <div className="min-h-screen bg-gray-50 ">
-                <div className="container mx-auto px-0 lg:px-10 py-8 ">
+        <div className="min-h-screen bg-gray-50">
+            <div className="container mx-auto px-0 lg:px-10 py-8">
                 {/* Breadcrumb Navigation */}
                 <div className="mb-8">
-                        <div className="flex items-center text-sm text-gray-600 mb-2 mt-8">
+                    <div className="flex items-center text-sm text-gray-600 mb-2">
                         <Link to="/" className="hover:text-blue-600 flex items-center">
                             <FaArrowLeft className="mr-1" /> Home
                         </Link>
@@ -190,7 +187,6 @@ const CategoryDetails = () => {
                     </div>
                 )}
             </div>
-        </div>
         </div>
     );
 };

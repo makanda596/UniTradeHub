@@ -7,8 +7,8 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
         cors: {
-       origin:"https://unitradehub-kesf.onrender.com",
-        // origin: 'http://localhost:5173', 
+    //    origin:"https://unitradehub-kesf.onrender.com",
+        origin: 'http://localhost:5173', 
 
     //    ebdjlen
       // Change this if frontend URL is different

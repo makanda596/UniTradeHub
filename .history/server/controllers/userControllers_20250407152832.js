@@ -4,7 +4,6 @@ import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import { Post } from "../models/postModel.js";
 import { sendEmail, sendRestPasswordConfirmationEmail,sendConfirmationEmail , sendEmailVerification } from "../utilis/sendEmail.js";
-import {Scam} from "../models/scam.js";
 // import { userGenerateTokenAndSetCookie } from "../utilis/userGenerateToken.js";
 export  const signup = async (req,res)=>{
     try {
@@ -541,38 +540,4 @@ export const resetPassword = async (req, res) => {
   } catch (error) {
       res.status(500).json({ message: 'Error resetting password' }, error.message);
   }
-};
-
-
-export const reportScammer = async (req, res) => {
-    const { reportedId } = req.params;
-    const userId = req.user.id;
-
-    try {
-        const reportedUser = await User.findById(reportedId);
-        if (!reportedUser) {
-            return res.status(400).json({ message: "User not found" });
-        }
-
-        const reportingUser = await User.findById(userId);
-        if (!reportingUser) {
-            return res.status(400).json({ message: "Please log in first" });
-        }
-
-        const reportExist = await Scam.findOne({
-            participants: { $all: [userId, reportedId] }
-        });
-
-        if (reportExist) {
-            return res.status(200).json({ message: "Report already exists", report: reportExist });
-        }
-
-        const newReport = await Scam.create({
-            participants: [userId, reportedId]
-        });
-
-        res.status(200).json({ message: "Successfully made a scam report", report: newReport });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
 };
