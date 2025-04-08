@@ -52,8 +52,6 @@ const MONGO_URL = process.env.MONGO_URL
 mongoose.connect(MONGO_URL) 
 try {
     console.log("mongodb connected")
-    console.log("Mongo URI:", process.env.MONGO_URL);
-
 }
 catch (error) {
     console.error(error)
