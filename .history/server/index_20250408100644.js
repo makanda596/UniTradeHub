@@ -47,12 +47,12 @@ app.use("/follow", FollowingRoutes);
 app.use('/admin', adminRoutes)
 app.use('/reviews', ReviewRoutes)
 const PORT = process.env.PORT || 6000;
-// const MONGO_URL = process.env.MONGO_URL
+const MONGO_URL = process.env.MONGO_URL
 //mongo db connect
 mongoose.connect("mongodb+srv://oumab743:makandabrian123@cluster0.qj7my.mongodb.net/BUYSELL?retryWrites=true&w=majority&appName=Cluster0") 
 try {
     console.log("mongodb connected")
-    // console.log("Mongo URI:", process.env.MONGO_URL);
+    console.log("Mongo URI:", process.env.MONGO_URL);
 
 }
 catch (error) {
