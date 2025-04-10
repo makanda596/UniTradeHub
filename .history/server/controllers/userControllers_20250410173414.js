@@ -4,9 +4,7 @@ import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import { Post } from "../models/postModel.js";
 import { sendEmail, sendRestPasswordConfirmationEmail,sendConfirmationEmail , sendEmailVerification } from "../utilis/sendEmail.js";
-import dotenv from 'dotenv';
-dotenv.config();
-
+import cloudinary from "../utilis/cloudinary.js";
 // import { userGenerateTokenAndSetCookie } from "../utilis/userGenerateToken.js";
 export  const signup = async (req,res)=>{
     try {

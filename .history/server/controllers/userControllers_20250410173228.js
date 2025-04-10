@@ -4,9 +4,7 @@ import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import { Post } from "../models/postModel.js";
 import { sendEmail, sendRestPasswordConfirmationEmail,sendConfirmationEmail , sendEmailVerification } from "../utilis/sendEmail.js";
-import dotenv from 'dotenv';
-dotenv.config();
-
+import cloudinary from "../utilis/cloudinary.js";
 // import { userGenerateTokenAndSetCookie } from "../utilis/userGenerateToken.js";
 export  const signup = async (req,res)=>{
     try {
@@ -143,7 +141,7 @@ export const EmailVerification = async (req,res)=>{
 export const login = async (req, res) => {
     const { email, password } = req.body;
     const generateToken = (id) => {
-        return jwt.sign({ id }, process.env.SECTRET_KEY, { expiresIn: "1d" })
+        return jwt.sign({ id }, "welcome", { expiresIn: "1d" })
     }
     try {
         const user = await User.findOne({ email });
