@@ -3,6 +3,8 @@ import axios from 'axios';
 import { io } from "socket.io-client";
 
 // Set your API endpoints
+const ADM_API = "http://localhost:5000/admin";
+const USER_API=import.meta.env.VITE_BACKEND_URL
 
 export const useAuthStore = create((set,get) => ({
     user: null,
