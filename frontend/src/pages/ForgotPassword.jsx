@@ -19,7 +19,7 @@ const ForgotPassword = () => {
         setIsLoading(true);
 
         try {
-            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/forgot-password`, { email });
+            await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/forgot-password`, { email });
             setMessage({
                 text: 'Password reset link sent to your email! Check your inbox (and spam folder).',
                 type: 'success'
