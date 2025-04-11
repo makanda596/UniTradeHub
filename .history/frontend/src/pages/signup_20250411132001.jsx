@@ -123,7 +123,7 @@ const Signup = () => {
                 </div>
                 
                 {/* Image container - hidden on small screens, visible on medium and larger screens */}
-                <div className="hidden md:block md:w-1/2 bg-cover bg-center">
+                <div className="hidden md:block  bg-cover bg-center">
                 <img src={market} alt="" className="h-full object-cover w-full"/>
                 </div>
             </div>

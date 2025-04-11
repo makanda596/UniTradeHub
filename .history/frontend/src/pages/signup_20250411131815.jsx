@@ -124,7 +124,7 @@ const Signup = () => {
                 
                 {/* Image container - hidden on small screens, visible on medium and larger screens */}
                 <div className="hidden md:block md:w-1/2 bg-cover bg-center">
-                <img src={market} alt="" className="h-full object-cover w-full"/>
+                <img src={image} alt=""/>
                 </div>
             </div>
         </div>

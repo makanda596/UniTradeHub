@@ -37,8 +37,8 @@ const Login = () => {
             style={{ backgroundImage: `url(${market})` }}
         >
             <div className="bg-blue-600 p-6 rounded-lg shadow-md w-84 text-white">
-                <div className="flex ">
-                    <img src={market} alt="" className="h-16 rounded-md w-16 object-cover"/>
+                <div>
+                    <img src={market} alt=""/>
                 <h2 className="text-2xl font-bold mb-6 text-center">UniTradeHub Login</h2>
                 </div>
                 {error && <p className="text-red-600 text-center">{error}</p>}
@@ -79,9 +79,9 @@ const Login = () => {
                         Login
                     </button>
                 </form>
-                <div className="mt-4 text-center flex flex-col space-y-4">
-                    <a href="/ForgotPassword" className="text-white underline">Forgot Password?</a>
-                    <a href="/signup" className="text-black hover:underline">Dont Have an Account ? Sign up</a>
+                <div className="mt-4 text-center flex flex-col space-y-2">
+                    <a href="/ForgotPassword" className="text-white hover:underline">Forgot Password?</a>
+                    <a href="/signup" className="text-white hover:underline">Dont Have an Account ? Sign up</a>
                 </div>
             </div>
         </div>

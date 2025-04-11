@@ -37,7 +37,7 @@ const Login = () => {
             style={{ backgroundImage: `url(${market})` }}
         >
             <div className="bg-blue-600 p-6 rounded-lg shadow-md w-84 text-white">
-                <div className="flex ">
+                <div>
                     <img src={market} alt="" className="h-16 rounded-md w-16 object-cover"/>
                 <h2 className="text-2xl font-bold mb-6 text-center">UniTradeHub Login</h2>
                 </div>
