@@ -70,13 +70,11 @@ function App() {
   useEffect(() => {
     fetchUser();
   }, []);
-  // const [details, setDetails] = useState(null);
   const { isCheckingAuth, checkAuth } = useAuthStore();
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
 
-  // Checking authentication - show loading screen
   if (isCheckingAuth) {
     return (
 

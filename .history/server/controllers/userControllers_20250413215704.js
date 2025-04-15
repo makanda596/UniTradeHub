@@ -7,7 +7,7 @@ import { sendEmail, sendRestPasswordConfirmationEmail,sendConfirmationEmail , se
 import dotenv from 'dotenv';
 dotenv.config();
 
-//SIGN UP SECTION
+// import { userGenerateTokenAndSetCookie } from "../utilis/userGenerateToken.js";
 export  const signup = async (req,res)=>{
     try {
         const {username, email,phoneNumber, gender,password,bio,location} = req.body;
@@ -38,7 +38,8 @@ export  const signup = async (req,res)=>{
         const verificationCodeExpires = Date.now() + 15* 60 * 1000; 
         const verificationCode = crypto.randomBytes(2).toString("hex")
       
-//saving the user            
+
+            
         const user = new User({ 
             username, 
             email, 
@@ -46,14 +47,19 @@ export  const signup = async (req,res)=>{
             bio: bio || "",
             location:location || "",
             password: hashedPassword,
-                        gender,
+            
+            gender,
             profilepic: gender === "male" ? boyprofilepic : girlprofilepic,
             verificationCode: verificationCode,
             verificationCodeExpires: verificationCodeExpires,
         });
 
+       
         await user.save();
-                    await sendEmailVerification(email, verificationCode)
+        const generateToken = (id) => {
+            return jwt.sign({ id }, process.env.SECTRET_KEY, { expiresIn: "1d" })
+        }
+            await sendEmailVerification(email, verificationCode)
 
         res.status(200).json({
             message: "User signed up",
@@ -61,6 +67,7 @@ export  const signup = async (req,res)=>{
                 ...user._doc,
                 password: undefined,
             },
+            token: generateToken(user._id)
         });
         
     } catch (error) {
@@ -69,7 +76,7 @@ export  const signup = async (req,res)=>{
     }
 }
 
-//EMAIL VERIFICATION RESEND CODE
+//login \
 
 export const EmailVerificationResend = async (req, res) => {
     const { email } = req.body;
@@ -90,14 +97,15 @@ export const EmailVerificationResend = async (req, res) => {
         user.verificationCode = verificationCode;
         user.verificationCodeExpires = verificationCodeExpires;
         user.status = false;
-        await user.save(); 
+        await user.save(); // Added save() to persist changes
 
+        // 5. Send verification email
         await sendEmailVerification(email, verificationCode);
 
-     
+        // 6. Return success response
         res.status(200).json({
             message: "New verification code sent to your email",
-            email: user.email 
+            email: user.email // Don't send entire user object for security
         });
 
     } catch (error) {
@@ -108,8 +116,6 @@ export const EmailVerificationResend = async (req, res) => {
         });
     }
 };
-
-//EMAIL VERIFICATION
 export const EmailVerification = async (req,res)=>{
     const {code}=req.body
     try{
@@ -134,7 +140,6 @@ export const EmailVerification = async (req,res)=>{
     }
 }
 
-// LPGIN SECTION
 export const login = async (req, res) => {
     const { email, password } = req.body;
     const generateToken = (id) => {
@@ -174,10 +179,56 @@ export const login = async (req, res) => {
         res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 };
+// const generateToken = (userId) => {
+//     return jwt.sign({ userId }, process.env.SECTRET_KEY, { expiresIn: "15m" });
+// };
 
+// export const login = async (req, res) => {
+//     try {
+//         const { email, password } = req.body;
 
+//         // Check if user exists
+//         const user = await User.findOne({ email });
+//         if (!user) {
+//             return res.status(404).json({ message: "Invalid email address" });
+//         }
 
-//LOGOUT SECTION PART
+//         // Compare passwords
+//         const isMatch = await bcrypt.compare(password, user.password);
+//         if (!isMatch) {
+//             return res.status(401).json({ message: "Invalid password" });
+//         }
+
+//         // Generate JWT token
+//         const accessToken = generateToken(user._id);
+
+//         // Set cookie with the token
+//         res.cookie("token", accessToken, {
+//             httpOnly: true,
+//             secure: true,
+//             sameSite: "None",
+//             maxAge: 15 * 60 * 1000, // 15 minutes
+//         });
+
+//         res.status(200).json({
+//             message: "Login successful",
+//             user: {
+//                 _id: user._id,
+//                 username: user.username,
+//                 email: user.email,
+//                 phoneNumber: user.phoneNumber,
+//                 gender: user.gender,
+//                 profilepic: user.profilepic, // Include profile picture
+//                 createdAt: user.createdAt,
+//             },
+//         });
+
+//     } catch (error) {
+//         console.error("❌ Login Error:", error);
+//         res.status(500).json({ message: "Internal Server Error", error: error.message });
+//     }
+// };
+
 export const logout = async (req, res) => {
     try {
         res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "None" });
@@ -188,7 +239,7 @@ export const logout = async (req, res) => {
     }
 };
 
-//GETTING ALL THE USERS
+
 export const getUsers = async (req, res) => {
     const userId = req.user.id
     try {
@@ -202,7 +253,6 @@ export const getUsers = async (req, res) => {
     }
 }
 
-//USER PROFILE
 export const profile = async (req, res) => {
    try { 
         
@@ -216,7 +266,7 @@ const user = await User.findById(req.user.id).select("-password").populate("cart
    }
 }
 
-//UPDATING SECTION
+
 export const updateUser = async (req, res) => {
     const { id } = req.params;
     const { username, email, phoneNumber, password, bio, location } = req.body;
@@ -275,7 +325,7 @@ export const updateUser = async (req, res) => {
     }
 };
 
-//DELETING OF A USER
+
 export const deleteUser = async (req,res)=>{
     const { createdBy: userId }=req.user.id
     try {
@@ -290,7 +340,6 @@ export const deleteUser = async (req,res)=>{
         res.status(500).json({ error: "Internal server error", message: error.message });
     }
 }
-//CHECKING AUTH
 export const checkAuth = async (req, res) => {
 
     try {
@@ -310,7 +359,7 @@ export const checkAuth = async (req, res) => {
 };
 
 
-//USER PROFILE
+
 export const userprofile = async(req,res)=>{
     const {id}= req.params
     try {
@@ -326,7 +375,6 @@ export const userprofile = async(req,res)=>{
 
     }
 }
-//GET USER SPECIFIC POSTS
 export const usergetposts = async (req, res) => {
     try {
         const id = req.user.id; // Correct extraction of user ID
@@ -344,7 +392,7 @@ export const usergetposts = async (req, res) => {
     }
 };
 
-//COUNTING OF THE USER SPECOFIC POSTS
+
 export const countUserPost = async (req,res)=>{
     try {
         const postCount = await Post.countDocuments({ createdBy: req.user.id });
@@ -377,7 +425,7 @@ export const deletePost = async (req, res) => {
     }
 };
 
-//ADDINF A POST TO CART
+
 export const addToCart = async (req, res) => {
     try {
         const { postId } = req.params; // Get postId from URL params
@@ -403,7 +451,9 @@ export const addToCart = async (req, res) => {
     }
 };
 
- //REMOVING A POST FROM CART
+/**
+ * Remove a post from the cart (GET postId from req.params)
+ */
 export const removeFromCart = async (req, res) => {
     try {
         const { postId } = req.params; // Get postId from URL params
@@ -422,7 +472,9 @@ export const removeFromCart = async (req, res) => {
     }
 };
 
-//CART THE CART INFOMATION
+/**
+ * Get the user's cart items
+ */
 export const getCart = async (req, res) => {
     try {
         const userId = req.user.id; // Get authenticated user ID
@@ -437,7 +489,7 @@ export const getCart = async (req, res) => {
     }
 };
 
-//FORGET PASSWORD SECTION
+
 export const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
@@ -463,7 +515,7 @@ export const forgotPassword = async (req, res) => {
     }
 };
 
-//RESETTING OF THE PASSWORD
+// controllers/authController.js
 export const resetPassword = async (req, res) => {
   const { password } = req.body;
   const { token}= req.params
@@ -496,3 +548,35 @@ export const resetPassword = async (req, res) => {
 };
 
 
+// export const reportScammer = async (req, res) => {
+//     const { reportedId } = req.params;
+//     const userId = req.user.id;
+
+//     try {
+//         const reportedUser = await User.findById(reportedId);
+//         if (!reportedUser) {
+//             return res.status(400).json({ message: "User not found" });
+//         }
+
+//         const reportingUser = await User.findById(userId);
+//         if (!reportingUser) {
+//             return res.status(400).json({ message: "Please log in first" });
+//         }
+
+//         const reportExist = await Scam.findOne({
+//             participants: { $all: [userId, reportedId] }
+//         });
+
+//         if (reportExist) {
+//             return res.status(200).json({ message: "Report already exists", report: reportExist });
+//         }
+
+//         const newReport = await Scam.create({
+//             participants: [userId, reportedId]
+//         });
+
+//         res.status(200).json({ message: "Successfully made a scam report", report: newReport });
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// };

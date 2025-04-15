@@ -1,9 +1,10 @@
 import nodemailer from 'nodemailer';
 import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, SIGNUP_SUCCESS_TEMPLATE, EMAIL_REVIEW_TEMPLATE } from '../Email.js/Emailtemplates.js';
 
+// Template selector (add more templates as needed)
 
-//SENDING OF THE EMAIL FOR RESETTING PASSWORD
 export const sendEmail = async (email, resetURL) => {
+    // const resetURL = `http://localhost:5173/ResetPassword/${resetToken}`
     try {
         const transporter = nodemailer.createTransport({
             host: 'smtp-relay.brevo.com',
@@ -21,15 +22,15 @@ export const sendEmail = async (email, resetURL) => {
             to: email,
             subject:"Passowrd Reset Request",
             html: PASSWORD_RESET_REQUEST_TEMPLATE.replace("{resetURL}", resetURL) ,
-            text: "reset your password", 
+            text: "reset your password", // Fallback for non-HTML clients
         });
 
     } catch (error) {
+        // console.error('Email failed:', error);
         throw new Error(`Email delivery failed: ${error.message}`);
     }
 };
 
-//SEDNING EMAILS FOR PASSWORD SUCCESS CONFIRMATION
 export const sendRestPasswordConfirmationEmail= async(email,username)=>{
     try {
         const transporter = nodemailer.createTransport({
@@ -43,7 +44,7 @@ export const sendRestPasswordConfirmationEmail= async(email,username)=>{
         });
 
 
-        const subject = "Password Reset Successful"; 
+        const subject = "Password Reset Successful"; // Added subject
     
 
         await transporter.sendMail({
@@ -60,7 +61,6 @@ export const sendRestPasswordConfirmationEmail= async(email,username)=>{
     }
 }
 
-//SEDNING A VERIFICATION CODE
 export const sendEmailVerification = async (email, verificationCode) => {
     try {
         const transporter = nodemailer.createTransport({
@@ -92,7 +92,6 @@ export const sendEmailVerification = async (email, verificationCode) => {
     }
 }
 
-//SENDING OF A SUCCESFULLY SIGNED UP
 export const sendConfirmationEmail = async (email)=>{
     try {
         const transporter = nodemailer.createTransport({
@@ -123,7 +122,6 @@ export const sendConfirmationEmail = async (email)=>{
     }
 }
 
-//SENDING OF REVIEWS EMAIL
 export const sendReviewsEmail = async (email, ReviewUrl) => {
     try {
         const transporter = nodemailer.createTransport({
@@ -142,10 +140,12 @@ export const sendReviewsEmail = async (email, ReviewUrl) => {
             to: email,
             subject: "New Review Made",
             html: EMAIL_REVIEW_TEMPLATE.replace("{ReviewUrl}", ReviewUrl),
-            text: "Check out new Reviews Made just for you", 
+            text: "Check out new Reviews Made just for you", // Fallback for non-HTML clients
         });
+        console.log("email",{email}, "here is the url ", { ReviewUrl })
 
     } catch (error) {
+        // console.error('Email failed:', error);
         throw new Error(`Email delivery failed: ${error.message}`);
     }
 };
