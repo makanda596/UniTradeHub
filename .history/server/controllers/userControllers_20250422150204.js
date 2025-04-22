@@ -1,10 +1,13 @@
 import { User } from "../models/userModels.js";
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import jwt from "jsonwebtoken";
-import { UsersetCookieGenerateToken } from "../utilis/userGenerateToken.js";
 import { Post } from "../models/postModel.js";
-// import { userGenerateTokenAndSetCookie } from "../utilis/userGenerateToken.js";
+import { sendEmail, sendRestPasswordConfirmationEmail,sendConfirmationEmail , sendEmailVerification } from "../utilis/sendEmail.js";
+import dotenv from 'dotenv';
+dotenv.config();
+
+//SIGN UP SECTION
 export  const signup = async (req,res)=>{
     try {
         const {username, email,phoneNumber, gender,password,bio,location} = req.body;
@@ -31,7 +34,11 @@ export  const signup = async (req,res)=>{
         const boyprofilepic = (`https://avatar.iran.liara.run/public/boy?username=${username}`)
         const girlprofilepic = (`https://avatar.iran.liara.run/public/girl?username=${username}`)
 
-            
+        //sending of verification code
+        const verificationCodeExpires = Date.now() + 15* 60 * 1000; 
+        const verificationCode = crypto.randomBytes(2).toString("hex")
+      
+//saving the user            
         const user = new User({ 
             username, 
             email, 
@@ -39,111 +46,138 @@ export  const signup = async (req,res)=>{
             bio: bio || "",
             location:location || "",
             password: hashedPassword,
-            gender,
-            profilepic: gender === "male" ? boyprofilepic : girlprofilepic
+                        gender,
+            profilepic: gender === "male" ? boyprofilepic : girlprofilepic,
+            verificationCode: verificationCode,
+            verificationCodeExpires: verificationCodeExpires,
         });
+
         await user.save();
-        return res.status(201).json({message: 'User registered successfully',
-            user:{
+                    await sendEmailVerification(email, verificationCode)
+
+        res.status(200).json({
+            message: "User signed up",
+            user: {
                 ...user._doc,
-                password:undefined,
-            }}
-        );
+                password: undefined,
+            },
+        });
+        
     } catch (error) {
         console.error(error);
         return res.status(500).json({error: 'Server error'});
     }
 }
 
-//login \
+//EMAIL VERIFICATION RESEND CODE
 
+export const EmailVerificationResend = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(400).json({ message: "The email does not exist" });
+        }
+
+        if (user.isVerified) {
+            return res.status(400).json({ message: 'User already verified. Please login.' });
+        }
+
+        const verificationCodeExpires = Date.now() + 15 * 60 * 1000; 
+        const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase(); 
+
+        user.verificationCode = verificationCode;
+        user.verificationCodeExpires = verificationCodeExpires;
+        user.status = false;
+        await user.save(); 
+
+        await sendEmailVerification(email, verificationCode);
+
+     
+        res.status(200).json({
+            message: "New verification code sent to your email",
+            email: user.email 
+        });
+
+    } catch (error) {
+        console.error('Resend verification error:', error);
+        res.status(500).json({
+            message: "Error resending verification code",
+            error: error.message
+        });
+    }
+};
+
+//EMAIL VERIFICATION
+export const EmailVerification = async (req,res)=>{
+    const {code}=req.body
+    try{
+        const user = await User.findOne({
+            verificationCode:code,
+                verificationCodeExpires: { $gt: Date.now()}
+        })
+        if(!user){
+            return res.status(400).json({message:"invalid code or code already expired"})
+        }
+
+        user.isVerified = true;
+            user.verificationCode = undefined;
+                user.verificationCodeExpires = undefined;
+               
+                await user.save();
+     await sendConfirmationEmail (user.email)
+        return res.status(200).json({message:"verified code succesfull" })
+    }
+    catch(error){
+        return res.status(400).json(error.message)
+    }
+}
+
+// LPGIN SECTION
 export const login = async (req, res) => {
     const { email, password } = req.body;
     const generateToken = (id) => {
-        return jwt.sign({id}, process.env.SECTRET_KEY, { expiresIn: "1 day" })
+        return jwt.sign({ id }, process.env.SECTRET_KEY, { expiresIn: "1d" })
     }
     try {
-        // Find user by admission number
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Invalid email address" });
         }
- 
-        // Compare passwords
+
+        // Check if user is verified
+        if (!user.isVerified) {
+            return res.status(403).json({
+                message: "Please verify your email first",
+                isVerified: false,
+                userId: user._id 
+            });
+        }
+
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) {
             return res.status(400).json({ message: "Incorrect password" });
         }
 
-        // Generate authentication tokens (if applicable)
-    res.status(200).json({
-        message:"user logged in",
-        user:{
-            ...user._doc,
-            password:undefined,
-            
-        },
-        token: generateToken(user._id)
-    })
-        await user.save();
-        
+        res.status(200).json({
+            message: "User logged in",
+            user: {
+                ...user._doc,
+                password: undefined,
+            },
+            token: generateToken(user._id)
+        });
 
     } catch (error) {
-        console.error("❌ Login Error:", error);
+        console.error("Login Error:", error);
         res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 };
 
-// const generateToken = (userId) => {
-//     return jwt.sign({ userId }, process.env.SECTRET_KEY, { expiresIn: "15m" });
-// };
 
-// export const login = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
 
-//         // Check if user exists
-//         const user = await User.findOne({ email });
-//         if (!user) {
-//             return res.status(404).json({ message: "Invalid email address" });
-//         }
-
-//         // Compare passwords
-//         const isMatch = await bcrypt.compare(password, user.password);
-//         if (!isMatch) {
-//             return res.status(401).json({ message: "Invalid password" });
-//         }
-
-//         // Generate JWT token
-//         const accessToken = generateToken(user._id);
-
-//         // Set cookie with the token
-//         res.cookie("token", accessToken, {
-//             httpOnly: true,
-//             secure: true,
-//             sameSite: "None",
-//             maxAge: 15 * 60 * 1000, // 15 minutes
-//         });
-
-//         res.status(200).json({
-//             message: "Login successful",
-//             user: {
-//                 _id: user._id,
-//                 username: user.username,
-//                 email: user.email,
-//                 phoneNumber: user.phoneNumber,
-//                 gender: user.gender,
-//                 profilepic: user.profilepic, // Include profile picture
-//                 createdAt: user.createdAt,
-//             },
-//         });
-
-//     } catch (error) {
-//         console.error("❌ Login Error:", error);
-//         res.status(500).json({ message: "Internal Server Error", error: error.message });
-//     }
-// };
-
+//LOGOUT SECTION PART
 export const logout = async (req, res) => {
     try {
         res.clearCookie("token", { httpOnly: true, secure: true, sameSite: "None" });
@@ -154,22 +188,25 @@ export const logout = async (req, res) => {
     }
 };
 
-
+//GETTING ALL THE USERS
 export const getUsers = async (req, res) => {
+    const userId = req.user.id
     try {
-        const student = await User.find({}).sort({ createdAt: -1 })
-        if (!student) {
+        const users = await User.find({ _id: { $ne: userId }}).select("-password").sort({ createdAt: -1 })
+        if (!users) {
             return res.status(400).json({ message: "no user found" })
         }
-        res.status(200).json(student)
+        res.status(200).json(users)
     } catch (error) {
         res.status(400).json(error.message)
     }
 }
 
+//USER PROFILE
 export const profile = async (req, res) => {
-   try {
-    const user = await User.findById(req.user.id).select("-password")
+   try { 
+        
+const user = await User.findById(req.user.id).select("-password").populate("cart","postId")
     if(!user){
         res.status(400).json({message:"not authoticated"})
     }
@@ -179,10 +216,10 @@ export const profile = async (req, res) => {
    }
 }
 
-
+//UPDATING SECTION
 export const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { username, email, phoneNumber, password, bio ,location} = req.body;
+    const { username, email, phoneNumber, password, bio, location } = req.body;
 
     try {
         // Check if the user exists
@@ -214,12 +251,8 @@ export const updateUser = async (req, res) => {
                 return res.status(400).json({ message: "Phone number already exists. Please use a different one." });
             }
         }
-        if (bio !== undefined && bio.length < 8) {
-            return res.status(400).json({ message: "Bio must be at least 8 characters long." });
-        }
-        if (location !== undefined && location.length < 2) {
-            return res.status(400).json({ message: "Bio must be at least 2 characters long." });
-        }
+        
+       
         // If password is being updated, hash it
         let updatedFields = { ...req.body };
         if (password) {
@@ -242,20 +275,22 @@ export const updateUser = async (req, res) => {
     }
 };
 
-
+//DELETING OF A USER
 export const deleteUser = async (req,res)=>{
-    const { id } = req.params;
+    const { createdBy: userId }=req.user.id
     try {
-        const user = await User.findByIdAndDelete({_id:id});
+        const user = await Post.findOneAndDelete(userId)
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
+        await User.findByIdAndDelete(req.user.id)
         res.status(200).json({ message: "User deleted successfully", user });
     } catch (error) { 
         console.error("�� Delete Error:", error);
         res.status(500).json({ error: "Internal server error", message: error.message });
     }
 }
+//CHECKING AUTH
 export const checkAuth = async (req, res) => {
 
     try {
@@ -266,7 +301,6 @@ export const checkAuth = async (req, res) => {
 
 
         console.log(existinguser)
-        console.log(req.user.id)
 
         res.status(200).json({ success: true, user:existinguser });
     } catch (error) {
@@ -276,37 +310,44 @@ export const checkAuth = async (req, res) => {
 };
 
 
-
+//USER PROFILE
 export const userprofile = async(req,res)=>{
     const {id}= req.params
     try {
-        const user = await User.findOne({ _id: id }).populate("posts", "productName description createdAt")
+        const user = await User.findOne({ _id: id })
+        .populate("posts", "productName description image createdAt")
+            .populate("reviews", "text senderId").populate("following", "followedId followerId status");
         if(!user){
-            res.status(400).json({message:"user not found"})
+         return   res.status(400).json({message:"user not found"}) 
         }
         res.status(200).json( user)
     } catch (error) {
-        res.json(error.message)
+    return    res.json(error.message)
 
     }
 }
+//GET USER SPECIFIC POSTS
 export const usergetposts = async (req, res) => {
-    const { id } = req.params
     try {
-        const user = await User.findOne({_id:id}).populate("posts", "productName description createdAt")
-        if (!user) {
-            res.status(400).json({ message: "user not found" })
-        }
-        res.status(200).json(user)
-    } catch (error) {
-        res.json(error.message)
-    }
-}
+        const id = req.user.id; // Correct extraction of user ID
 
+        // Find the user by ID and populate the "posts" field
+        const user = await User.findById(id).populate("posts", "productName image description createdAt").sort({createdAt:-1});
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json(user); // Return only the user's posts
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+//COUNTING OF THE USER SPECOFIC POSTS
 export const countUserPost = async (req,res)=>{
     try {
-        const { id } = req.params;
-        const postCount = await Post.countDocuments({ createdBy: id });
+        const postCount = await Post.countDocuments({ createdBy: req.user.id });
 
         res.status(200).json({ success: true, postCount });
     } catch (error) {
@@ -336,7 +377,7 @@ export const deletePost = async (req, res) => {
     }
 };
 
-
+//ADDINF A POST TO CART
 export const addToCart = async (req, res) => {
     try {
         const { postId } = req.params; // Get postId from URL params
@@ -353,7 +394,7 @@ export const addToCart = async (req, res) => {
         }
 
         // Add post to cart
-        user.cart.push(postId);
+        user.carts.push(postId);
         await user.save();
 
         res.status(200).json({ message: "Post added to cart", cart: user.cart });
@@ -362,9 +403,7 @@ export const addToCart = async (req, res) => {
     }
 };
 
-/**
- * Remove a post from the cart (GET postId from req.params)
- */
+ //REMOVING A POST FROM CART
 export const removeFromCart = async (req, res) => {
     try {
         const { postId } = req.params; // Get postId from URL params
@@ -383,19 +422,64 @@ export const removeFromCart = async (req, res) => {
     }
 };
 
-/**
- * Get the user's cart items
- */
-export const getCart = async (req, res) => {
+
+
+//FORGET PASSWORD SECTION
+export const forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
     try {
-        const userId = req.user.id; // Get authenticated user ID
+        // 1. Check if user exists
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+  
+        // 2. Generate reset token (expires in 10 mins)
+        const resetToken = crypto.randomBytes(20).toString("hex")
+        user.resetPasswordExpires = Date.now() + 20 * 60 * 1000; // 10 minutes
+        user.resetPasswordToken = resetToken
+        await user.save();
 
-        // Fetch user and populate the cart with actual post data
-        const user = await User.findById(userId).populate("cart");
-        if (!user) return res.status(404).json({ message: "User not found" });
+        const resetURL = `https://unitradehub-kesf.onrender.com/ResetPassword/${resetToken}`
+        await sendEmail(email,  resetURL);
 
-        res.status(200).json({ cart: user.cart });
+        res.status(200).json({ message: 'Reset email sent' });
     } catch (error) {
-        res.status(500).json({ message: "Internal server error", error: error.message });
+        res.status(500).json({ message: 'Error sending email' });
     }
 };
+
+//RESETTING OF THE PASSWORD
+export const resetPassword = async (req, res) => {
+  const { password } = req.body;
+  const { token}= req.params
+
+  try {
+    // const hashedToken = crypto
+    //   .createHash('sha256')
+    //   .update(token)
+    //   .digest('hex');
+
+    const user = await User.findOne({
+        resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+
+    const hashPassword = await bcrypt.hash(password, 10) 
+    user.password = hashPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+      sendRestPasswordConfirmationEmail(user.email, user.username)
+    res.status(200).json({ message: 'Password updated' });
+  } catch (error) {
+      res.status(500).json({ message: 'Error resetting password' }, error.message);
+  }
+};
+
+
