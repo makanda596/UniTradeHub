@@ -26,6 +26,7 @@ export const addCart = async (req, res) => {
 
         const existingCartItem = await Cart.findOne({
             postId: postId,
+            createdBy,
             userId: userId
         });
 
@@ -38,6 +39,7 @@ export const addCart = async (req, res) => {
 
         const newCart = new Cart({
             postId,
+            createdBy,
             userId
         });
 

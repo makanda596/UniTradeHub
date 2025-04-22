@@ -8,3 +8,4 @@ createRoot(document.getElementById('root')).render(
     <App />
     </StrictMode>
 )
+//delte the strictmode so as to render once

@@ -97,8 +97,7 @@ export const removeCart = async (req,res)=>{
         }
 
         ///I find the userId in the user schema and pull the itme which is the cart.witht the existing id from the cart schema then i set it to true
-        await User.findByIdAndUpdate(userId, { $pull: { cart: existingPost.postId}}, {new:true})
-        await existingPost.save()
+        await User.findByIdAndUpdate(userId, { $pull: { cart: existingPost._id}}, {new:true})
         // await Cart.findOneAndDelete(existingPost)
         res.json({ message: "succesfully removed the saved post" });
 

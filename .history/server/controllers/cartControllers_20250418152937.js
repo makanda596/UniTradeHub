@@ -26,6 +26,7 @@ export const addCart = async (req, res) => {
 
         const existingCartItem = await Cart.findOne({
             postId: postId,
+            createdBy,
             userId: userId
         });
 
@@ -38,6 +39,7 @@ export const addCart = async (req, res) => {
 
         const newCart = new Cart({
             postId,
+            createdBy,
             userId
         });
 
@@ -97,7 +99,7 @@ export const removeCart = async (req,res)=>{
         }
 
         ///I find the userId in the user schema and pull the itme which is the cart.witht the existing id from the cart schema then i set it to true
-        await User.findByIdAndUpdate(userId, { $pull: { cart: existingPost.postId}}, {new:true})
+        await User.findByIdAndUpdate(userId, { $pull: { cart: existingPost._id}}, {new:true})
         await existingPost.save()
         // await Cart.findOneAndDelete(existingPost)
         res.json({ message: "succesfully removed the saved post" });

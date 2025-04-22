@@ -66,7 +66,7 @@ export const addCart = async (req, res) => {
  
 export const getCart = async (req,res)=>{
     try {
-        const cart = await Cart.find({ userId: req.user.id }).populate("postId", "productName description image createdBy")
+        const cart = await Cart.find({ userId: req.user.id }).populate("postId", "productName description image createdBy").populate("createdBy","username")
         if(!cart){
             return res.status(400).json({message:"please log in"})
         }
@@ -97,8 +97,7 @@ export const removeCart = async (req,res)=>{
         }
 
         ///I find the userId in the user schema and pull the itme which is the cart.witht the existing id from the cart schema then i set it to true
-        await User.findByIdAndUpdate(userId, { $pull: { cart: existingPost.postId}}, {new:true})
-        await existingPost.save()
+        await User.findByIdAndUpdate(userId, { $pull: { cart: existingPost._id}}, {new:true})
         // await Cart.findOneAndDelete(existingPost)
         res.json({ message: "succesfully removed the saved post" });
 
