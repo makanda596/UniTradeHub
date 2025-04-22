@@ -54,8 +54,8 @@ const RelatedProducts = ({ category, currentPostId }) => {
     return (
         <div className="max-w-6xl mx-auto px-4 py-12">
             <div className="flex items-center mb-6">
-                <BiCategory className="text-xl mr-2 text-gray-600 text-gray-400" />
-                <h3 className="text-xl font-semibold text-gray-800 text-black">
+                <BiCategory className="text-xl mr-2 text-gray-600 dark:text-gray-400" />
+                <h3 className="text-xl font-semibold text-gray-800 dark:text-black">
                     More in {category}
                 </h3>
             </div>
@@ -75,7 +75,7 @@ const RelatedProducts = ({ category, currentPostId }) => {
                            
                         </div>
                         <div className="p-4">
-                            <h4 className="text-lg font-semibold text-gray-900 text-black line-clamp-2 mb-2">
+                            <h4 className="text-lg font-semibold text-gray-900 dark:text-white line-clamp-2 mb-2">
                                 {post.productName}
                             </h4>
                             <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">

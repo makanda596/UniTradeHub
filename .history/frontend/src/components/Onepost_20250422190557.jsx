@@ -76,7 +76,7 @@ const PostPage = () => {
               <a href={`/Chart/${post?.createdBy?._id}`}>Contact Seller</a>
           </button>
             <SavePost />
-            <a href='#reviews' className=" text-black px-2 rounded-lg font-semibold text-sm bg-gray-200">Reviews</a>
+            <a href='#reviews' className=" text-black px-1 rounded-lg font-semibold text-sm bg-gray-200">Reviews</a>
 
         </div>
       </div>

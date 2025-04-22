@@ -164,7 +164,7 @@ export const getOnePost = async (req,res) =>{
 
     try {
 
-        const post = await Post.findOne({ _id: postId }).populate("createdBy", "username phoneNumber profilepic location")
+        const post = await Post.findOne({ _id: postId }).populate("createdBy", "username phoneNumber profilepic")
         if(!postId){
             res.status(400).json({message:"no post with this id found"})
         }

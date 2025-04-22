@@ -207,6 +207,7 @@ const CreatePost = ({ onClose, onPostCreated }) => {
             </label>
           </div>
 
+          {/* Product Name */}
           <div className="space-y-1">
             <label className="flex text-sm font-medium text-gray-700 items-center">
               <FaTag className="mr-2 text-blue-500" />

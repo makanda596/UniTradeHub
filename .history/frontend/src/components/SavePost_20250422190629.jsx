@@ -33,7 +33,7 @@ const SavePost = () => {
                 onClick={handleSaveClick}
                 className="bg-green-500 text-white w-40 px-2 py-1 rounded-md hover:bg-blue-600 transition duration-200 text-sm font-semibold"
             >
-                Save 
+                Save Post
             </button>
         </div>
     );

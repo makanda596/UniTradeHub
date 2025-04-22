@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import { useAuthStore } from "../utilis/auth.js";
 import Dashboard from "../components/Dashboard.jsx";
-import WarningMessage from "../components/WarningMessage.jsx"; // Make sure the path is correct
 import axios from "axios";
 
 const Home = () => {
   const [user, setUser] = useState(null);
-  const { logout } = useAuthStore();
+  const [warningMessage, setWarningMessage] = useState("");
 
   const fetchUser = async () => {
     try {
@@ -18,7 +17,6 @@ const Home = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-
       setUser(response.data.user);
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -27,13 +25,21 @@ const Home = () => {
 
   useEffect(() => {
     fetchUser();
+    // Set the warning message when the component mounts
+    setWarningMessage("Please be aware of scammers. Do not purchase a product without seeing it.");
   }, []);
 
+  const { logout } = useAuthStore();
+
   return (
-    <div >
+    <div>
       <Navbar logout={logout} user={user} />
-      <WarningMessage/>
-      {user ? <Dashboard logout={logout} user={user} userId={user._id} /> : <p className="text-center mt-0">Loading...</p>}
+      {warningMessage && (
+        <div className="bg-yellow-200 text-yellow-800 p-3 text-center">
+          {warningMessage}
+        </div>
+      )}
+      {user ? <Dashboard logout={logout} user={user} userId={user._id} /> : <p>Loading...</p>}
     </div>
   );
 };

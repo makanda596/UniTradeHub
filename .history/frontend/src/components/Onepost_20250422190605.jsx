@@ -72,11 +72,11 @@ const PostPage = () => {
         <p className="text-gray-700 mt-4 leading-relaxed">{post?.description || "No description available."}</p>
 
         <div className="flex space-x-2 mt-4">
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-0 rounded-lg shadow-md transition duration-300">
+          <button className="bg-blue-600 hover:bg-blue-700 text-white px-1 py-0 rounded-lg shadow-md transition duration-300">
               <a href={`/Chart/${post?.createdBy?._id}`}>Contact Seller</a>
           </button>
             <SavePost />
-            <a href='#reviews' className=" text-black px-2 rounded-lg font-semibold text-sm bg-gray-200">Reviews</a>
+            <a href='#reviews' className=" text-black px-1 rounded-lg font-semibold text-sm bg-gray-200">Reviews</a>
 
         </div>
       </div>

@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import Navbar from "../components/Navbar.jsx";
 import { useAuthStore } from "../utilis/auth.js";
 import Dashboard from "../components/Dashboard.jsx";
-import WarningMessage from "../components/WarningMessage.jsx"; // Make sure the path is correct
 import axios from "axios";
 
 const Home = () => {
   const [user, setUser] = useState(null);
-  const { logout } = useAuthStore();
 
   const fetchUser = async () => {
+
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/auth/profile`, {
@@ -27,13 +26,14 @@ const Home = () => {
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, []); 
+
+  const { logout } = useAuthStore();
 
   return (
-    <div >
+    <div>
       <Navbar logout={logout} user={user} />
-      <WarningMessage/>
-      {user ? <Dashboard logout={logout} user={user} userId={user._id} /> : <p className="text-center mt-0">Loading...</p>}
+      {user ? <Dashboard logout={logout} user={user} userId={user._id} /> : <p>Loading...</p>}
     </div>
   );
 };

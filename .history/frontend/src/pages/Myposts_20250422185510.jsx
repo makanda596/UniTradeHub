@@ -85,7 +85,7 @@ const Myposts = () => {
     };
 
     const handleShare = (postId) => {
-        const shareUrl = `${window.location.origin}/Onepost/${postId}`; 
+        const shareUrl = `${window.location.origin}/post/${postId}`; // Construct the URL for the specific post
 
         if (navigator.share) {
             navigator.share({
@@ -95,6 +95,7 @@ const Myposts = () => {
                 console.log('Successfully shared');
             }).catch((error) => {
                 console.error('Error sharing:', error);
+                // Fallback for browsers that don't support Web Share API
                 navigator.clipboard.writeText(shareUrl);
                 Swal.fire({
                     icon: 'info',
@@ -105,6 +106,7 @@ const Myposts = () => {
                 });
             });
         } else {
+            // Fallback for browsers that don't support Web Share API
             navigator.clipboard.writeText(shareUrl);
             Swal.fire({
                 icon: 'info',

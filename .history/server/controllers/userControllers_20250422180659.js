@@ -337,7 +337,7 @@ export const usergetposts = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
-        res.status(200).json(user);
+        res.status(200).json(user); // Return only the user's posts
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

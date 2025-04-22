@@ -30,10 +30,11 @@ const Home = () => {
   }, []);
 
   return (
-    <div >
-      <Navbar logout={logout} user={user} />
-      <WarningMessage/>
+    <div>
+      {/* <Navbar logout={logout} user={user} /> */}
       {user ? <Dashboard logout={logout} user={user} userId={user._id} /> : <p className="text-center mt-0">Loading...</p>}
+      <WarningMessage />
+
     </div>
   );
 };
