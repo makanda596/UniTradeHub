@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
+  base: './', // ← This is essential for static site deployment
   plugins: [
     react(),
     tailwindcss(),
