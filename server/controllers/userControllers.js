@@ -440,7 +440,7 @@ export const forgotPassword = async (req, res) => {
         user.resetPasswordToken = resetToken
         await user.save();
 
-        const resetURL = `https://unitrade-fkrj.onrender.com/ResetPassword/${resetToken}`
+        const resetURL = `https://unitradehubs.onrender.com/ResetPassword/${resetToken}`
         await sendEmail(email, resetURL);
 
         res.status(200).json({ message: 'Reset email sent' });
