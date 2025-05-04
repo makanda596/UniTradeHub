@@ -18,6 +18,7 @@ const Footer = () => {
                 <div>
                     <h3 className="text-white font-semibold mb-2">Support</h3>
                     <ul className="space-y-1 text-sm">
+                        <a href='/safety' target="_blank">Safety tips</a>
                         <li><a href="#" className="hover:underline">Help Center</a></li>
                         <li><a href="/contact" target="_blank" className="hover:underline">Contact Us</a></li>
                         <li><a href="#" className="hover:underline">FAQs</a></li>

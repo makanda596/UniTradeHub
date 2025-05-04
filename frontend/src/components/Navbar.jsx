@@ -126,7 +126,7 @@ const Navbar = ({ logout }) => {
                         >
                            
                             <span>
-                                {user?.username.length > 7 && (<p> {user?.username.slice(0,7)}</p>)}
+                                {user?.username.length > 7 ? (<p> {user?.username.slice(0,7)}</p>) : (<p>{user?.username}</p>)}
                                </span>
                             <FiChevronDown size={18} />
                         </button>

@@ -6,14 +6,14 @@ import axios from "axios";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Settings from "./pages/Settings.jsx";
-// import Signup from './pages/Signup.jsx'
+import Signup from './pages/Signup.jsx'
 import Post from "./components/Post.jsx";
 import Myposts from "./pages/Myposts.jsx";
 import CategoryDetails from "./components/CategoryDetails.jsx";
 import Profile from "./pages/Profile.jsx";
 import MyProfile from "./pages/MyProfile.jsx";
 import ChartPage from './pages/ChartPage.jsx';
-// import Chart from './pages/Chart.jsx';
+import Chart from './pages/Chart.jsx';
 import Onepost from './components/Onepost.jsx';
 import Reviewspage from "./pages/Reviewspage.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
@@ -23,11 +23,11 @@ import SavedPost from "./pages/SavedPost.jsx";
 import GuestDashboard from "./pages/GuestDashboard.jsx";
 import About from './pages/About.jsx'
 import AdminLogin from './pages/admin/AdminLogin.jsx'
-// use
 import { useAuthStore } from "./utilis/auth.js";
 import Terms from "./pages/Terms.jsx";
 import Contact from "./pages/Contact.jsx";
 import AdminHome from "./pages/admin/AdminHome.jsx";
+import Safety from "./pages/Safety.jsx";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -100,17 +100,18 @@ function App() {
         <Route path='/terms' element={<Terms />} />
         <Route path='/contact' element={<Contact />} />
         <Route path="/EmailVerification" element={<EmailVerification user={user} />} />
+        <Route path="/safety" element={<Safety/>}/>
 
 {/* //redirect routes */}
         <Route path="/" element={<RedirectAuthenticatedUser><GuestDashboard /></RedirectAuthenticatedUser>} />
         <Route path="/login" element={<RedirectAuthenticatedUser><Login /></RedirectAuthenticatedUser>} />
-        {/* <Route path="/signup" element={<RedirectAuthenticatedUser><Signup /></RedirectAuthenticatedUser>} /> */}
+        <Route path="/signup" element={<RedirectAuthenticatedUser><Signup /></RedirectAuthenticatedUser>} />
 
         {/* protected routes */}
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/post" element={<ProtectedRoute><Post /></ProtectedRoute>} />
         <Route path="/chart" element={<ProtectedRoute><ChartPage /></ProtectedRoute>} />
-        {/* <Route path="/Chart/:recieverId" element={<ProtectedRoute><Chart user={user} userId={user?._id} /></ProtectedRoute>} /> */}
+        <Route path="/Chart/:recieverId" element={<ProtectedRoute><Chart user={user} userId={user?._id} /></ProtectedRoute>} />
         <Route path="/Profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/Myposts" element={<ProtectedRoute><Myposts user={user} userId={user?._id} /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><MyProfile user={user} logout={logout} userId={user?._id} /></ProtectedRoute>} />
