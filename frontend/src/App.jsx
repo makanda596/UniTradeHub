@@ -5,9 +5,9 @@ import axios from "axios";
 // Pages & Components
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
-import Signup from "./pages/Signup.jsx";
 import Settings from "./pages/Settings.jsx";
 import Post from "./components/Post.jsx";
+import SignUp from './pages/Signup.jsx'
 import Myposts from "./pages/Myposts.jsx";
 import CategoryDetails from "./components/CategoryDetails.jsx";
 import Profile from "./pages/Profile.jsx";
@@ -91,6 +91,7 @@ function App() {
 
   return (
     
+      
       <Routes>
         <Route path="/ResetPassword/:token" element={<ResetPassword />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
