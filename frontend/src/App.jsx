@@ -13,7 +13,7 @@ import CategoryDetails from "./components/CategoryDetails.jsx";
 import Profile from "./pages/Profile.jsx";
 import MyProfile from "./pages/MyProfile.jsx";
 import ChartPage from './pages/ChartPage.jsx';
-import Chart from './pages/Chart.jsx';
+// import Chart from './pages/Chart.jsx';
 import Onepost from './components/Onepost.jsx';
 import Reviewspage from "./pages/Reviewspage.jsx";
 import ForgotPassword from "./pages/ForgotPassword.jsx";
@@ -110,7 +110,7 @@ function App() {
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/post" element={<ProtectedRoute><Post /></ProtectedRoute>} />
         <Route path="/chart" element={<ProtectedRoute><ChartPage /></ProtectedRoute>} />
-        <Route path="/Chart/:recieverId" element={<ProtectedRoute><Chart user={user} userId={user?._id} /></ProtectedRoute>} />
+        {/* <Route path="/Chart/:recieverId" element={<ProtectedRoute><Chart user={user} userId={user?._id} /></ProtectedRoute>} /> */}
         <Route path="/Profile/:userId" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/Myposts" element={<ProtectedRoute><Myposts user={user} userId={user?._id} /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><MyProfile user={user} logout={logout} userId={user?._id} /></ProtectedRoute>} />
