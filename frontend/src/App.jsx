@@ -6,7 +6,7 @@ import axios from "axios";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Settings from "./pages/Settings.jsx";
-import Signup from './pages/Signup.jsx'
+// import Signup from './pages/Signup.jsx'
 import Post from "./components/Post.jsx";
 import Myposts from "./pages/Myposts.jsx";
 import CategoryDetails from "./components/CategoryDetails.jsx";
@@ -104,7 +104,7 @@ function App() {
 {/* //redirect routes */}
         <Route path="/" element={<RedirectAuthenticatedUser><GuestDashboard /></RedirectAuthenticatedUser>} />
         <Route path="/login" element={<RedirectAuthenticatedUser><Login /></RedirectAuthenticatedUser>} />
-        <Route path="/signup" element={<RedirectAuthenticatedUser><Signup /></RedirectAuthenticatedUser>} />
+        {/* <Route path="/signup" element={<RedirectAuthenticatedUser><Signup /></RedirectAuthenticatedUser>} /> */}
 
         {/* protected routes */}
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
