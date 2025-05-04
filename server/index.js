@@ -4,7 +4,6 @@ import cors from 'cors'
 import dotenv from "dotenv"
 import cookieParser from "cookie-parser"
 import UserRoutes from './routes/UserRoutes.js'
-import session from 'express-session'
 import PostRoutes from "./routes/PostRoutes.js"
 import messageRoutes from "./routes/messageRoutes.js"
 import adminRoutes from './routes/adminRoutes.js'
