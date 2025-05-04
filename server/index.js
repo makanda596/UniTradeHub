@@ -19,7 +19,7 @@ const URL = process.env.FRONTEND_URL
 
 app.use(cors(
     {
-        origin: URL,
+        origin: "https://unitradehubs.onrender.com",
         credentials: true,
     }
 ))
