@@ -6,8 +6,8 @@ import axios from "axios";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Settings from "./pages/Settings.jsx";
+import Signup from './pages/Signup.jsx'
 import Post from "./components/Post.jsx";
-import SignUp from './pages/Signup.jsx'
 import Myposts from "./pages/Myposts.jsx";
 import CategoryDetails from "./components/CategoryDetails.jsx";
 import Profile from "./pages/Profile.jsx";
