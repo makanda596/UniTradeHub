@@ -627,6 +627,11 @@ export const NEW_POST_TEMPLATE = `
       line-height: 1.6;
     }
 
+    .highlight {
+      font-weight: bold;
+      color: #2E5BFF;
+    }
+
     .cta-button {
       display: inline-block;
       margin-top: 20px;
@@ -648,7 +653,7 @@ export const NEW_POST_TEMPLATE = `
 </head>
 <body>
   <div class="header">
-    <h1>🛍️ New Item Listed by {seller}</h1>
+    <h1>🛍️ {seller} Just Listed Something Special!</h1>
   </div>
 
   <div class="content">
@@ -656,14 +661,18 @@ export const NEW_POST_TEMPLATE = `
     <div class="product-info">
       <h2>{productName}</h2>
       <p>{description}</p>
+      <p>✨ This might be exactly what you’ve been looking for. Don’t miss your chance to grab it before it’s gone!</p>
+      <p>🔥 Popular items like this don't stay available for long. Check it out now!</p>
     </div>
     <a href="{ReviewUrl}" class="cta-button">🔍 View Product</a>
   </div>
 
   <div class="footer">
     <p>You’re receiving this email because you’re part of Uni Trade Hub.</p>
+    <p>Stay tuned for more deals and unique listings tailored just for you.</p>
     <p>&copy; ${new Date().getFullYear()} Uni Trade Hub. All rights reserved.</p>
   </div>
 </body>
 </html>
 `;
+

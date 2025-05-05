@@ -232,6 +232,10 @@ export const updateUser = async (req, res) => {
             return res.status(404).json({ message: "User not found" });
         }
 
+        if (username.length > 15) {
+            return res.status(400).json({ message: "The username should not be more than 15 characters" });
+        }
+
         // Check if the new username is already taken (excluding the current user)
         if (username) {
             const existingUsername = await User.findOne({ username });

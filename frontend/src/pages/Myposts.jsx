@@ -58,7 +58,7 @@ const Myposts = () => {
         if (result.isConfirmed) {
             try {
                 const token = localStorage.getItem("token");
-                await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/delete/${postId}`, {
+                await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/auth/delete/${postId}`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },

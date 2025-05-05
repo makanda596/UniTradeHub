@@ -1,3 +1,4 @@
+import { populate } from "dotenv";
 import { Cart } from "../models/Cart.js"
 import { Post } from "../models/postModel.js"
 import { User } from "../models/userModels.js"
@@ -66,7 +67,15 @@ export const addCart = async (req, res) => {
  
 export const getCart = async (req,res)=>{
     try {
-        const cart = await Cart.find({ userId: req.user.id }).populate("postId", "productName description image createdBy")
+        const cart = await Cart.find({ userId: req.user.id })
+        .populate({
+            path:"postId",
+            select:"productName description image createdBy",
+            populate:{
+                path:"createdBy",
+                select:"username profilepic"
+            }
+        })
         if(!cart){
             return res.status(400).json({message:"please log in"})
         }

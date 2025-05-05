@@ -33,13 +33,13 @@ const PostPage = () => {
     <Navbar/>
     <div className="flex flex-col md:flex-row items-center md:items-start py-14 px-0 max-w-6xl mx-auto  ">
 
-      <div className="w-full md:w-1/2 flex flex-col items-center">
+      <div className="w-full md:w-full flex flex-col items-center">
         <img
           src={post.image}
           alt="Post"
-          className="w-full h-96  rounded-lg shadow-md object-cover"
+          className="w-full h-96   object-contain"
         />
-        <div className="flex space-x-3 mt-4">
+        <div className="flex space-x-3 mt-2">
           {[post.image, post.image, post.image].map((img, index) => (
             <img
               key={index}
@@ -51,7 +51,7 @@ const PostPage = () => {
         </div>
       </div>
 
-      <div className="w-full ml-4 md:w-1/2 md:pl-8 mt-6 md:mt-4">
+      <div className="w-full ml-[-100px] md:w-3/4 md:pl-8 mt-0 md:mt-4">
         
           <Link to={`/Profile/${post?.createdBy?._id}`} className="flex items-center space-x-4 mb-2 p-2 rounded-lg shadow-md" >
           <img
@@ -59,7 +59,7 @@ const PostPage = () => {
             alt="Seller"
             className="w-14 h-14 object-cover rounded-full border"
           />
-          <div className="flex flex-col">
+          <div className="flex flex-col ">
             
             <p className="text-lg font-semibold text-gray-800">{post?.createdBy?.username}</p>
           </div>
@@ -69,13 +69,13 @@ const PostPage = () => {
           <p className="text-gray-600 mt-0 text-md"><span className="text-blue-600">location:</span>{post ?. createdBy?.location || "Location not specified"}</p>
 
         
-        <p className="text-gray-700 mt-4 leading-relaxed">{post?.description || "No description available."}</p>
+        <p className="text-gray-700 mt-2 leading-relaxed">{post?.description || "No description available."}</p>
 
-        <div className="flex space-x-2 mt-4">
+        <div className="flex space-x-2 mt-2">
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-0 rounded-lg shadow-md transition duration-300">
               <a href={`/Chart/${post?.createdBy?._id}`}>Contact Seller</a>
           </button>
-            <SavePost />
+            <SavePost postId={post._id} />
             <a href='#reviews' className=" text-black px-2 rounded-lg font-semibold text-sm bg-gray-200">Reviews</a>
 
         </div>

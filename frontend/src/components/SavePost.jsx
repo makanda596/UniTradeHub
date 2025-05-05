@@ -1,15 +1,15 @@
 import axios from 'axios';
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+// import { useParams } from 'react-router-dom';
 
-const SavePost = () => {
-    const {postId} = useParams()
+const SavePost = ({postId}) => {
+    // const {postId} = useParams()
     const [error,setError]= useState("")
     const handleSaveClick = async () => {
         try {
             const token = localStorage.getItem("token");
   await axios.post(
-                `${import.meta.env.VITE_BACKEND_URL}/carts/addCart/${postId}`, // correct URL
+                `${import.meta.env.VITE_BACKEND_URL}/carts/addCart/${postId}`, 
                 {}, 
                 {
                     headers: {

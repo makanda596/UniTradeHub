@@ -52,8 +52,8 @@ const RelatedProducts = ({ category, currentPostId }) => {
     if (relatedPosts.length === 0) return null;
 
     return (
-        <div className="max-w-6xl mx-auto px-4 py-12">
-            <div className="flex items-center mb-6">
+        <div className="max-w-6xl mx-auto px-4 py-0">
+            <div className="flex items-center mb-2">
                 <BiCategory className="text-xl mr-2 text-gray-600 text-gray-400" />
                 <h3 className="text-xl font-semibold text-gray-800 text-black">
                     More in {category}
@@ -70,7 +70,7 @@ const RelatedProducts = ({ category, currentPostId }) => {
                             <img
                                 src={post.image}
                                 alt={post.productName}
-                                className="w-full h-48 object-cover rounded-t-lg"
+                                className="w-full h-48 object-contain rounded-t-lg"
                             />
                            
                         </div>

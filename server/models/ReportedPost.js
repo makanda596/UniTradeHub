@@ -3,12 +3,12 @@ import mongoose from 'mongoose'
 const ReportedPostSchema = new mongoose.Schema({
     postId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Post", // ensure "Post" matches your actual model name
+        ref: "Post", 
         required: true
     },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "User", 
         required: true
     },
     reason: {

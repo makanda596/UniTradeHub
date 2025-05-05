@@ -2,13 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Post from "../components/Post.jsx";
 import moment from "moment";
-import { FaThumbsUp, FaComment, FaShare, FaWhatsapp } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import FollowButton from "./FollowButton.jsx";
 import ReportPost from "./ReportPost.jsx";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdCancel } from "react-icons/md";
-import SavePost from "./SavePost.jsx";
 const AllPosts = ({ user }) => {
     const [selectedPost, setSelectedPost] = useState({ id: null, name: '' });
     const [posts, setPosts] = useState([]);
@@ -171,7 +169,7 @@ const AllPosts = ({ user }) => {
                                             )}
                                         </div>
                                     </div>
-                                    <img src={post.image} alt="Post" className="w-full -ml-0 h-96 object-cover" />
+                                    <img src={post.image} alt="Post" className="w-full ml-[-10px] h-94 object-cover" />
                                 </Link>
                                 <ReportPost
                                     popUp={selectedPost.id === post._id}

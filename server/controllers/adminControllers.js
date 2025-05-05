@@ -2,6 +2,9 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { Admin } from '../models/adminModels.js';
 import { User } from '../models/userModels.js';
+import { Post } from '../models/postModel.js';
+import ReportedPost from '../models/ReportedPost.js';
+import { Report } from '../models/Report.js';
 
 const generateToken = (id) => {
     return jwt.sign({ id }, process.env.SECTRET_KEY, { expiresIn: '20mins' });
@@ -211,3 +214,109 @@ export const oneUser = async (req,res)=>{
         res.json({ message: "error counting the users" }) 
     }
 }
+
+//getting all the posts 
+export const getAllPosts = async (req, res) => {
+
+    // $ne it means not equal to will retrive all the posts which are not equal to the user id
+    try {
+        const admin = await Admin.findById(req.admin.id)
+        if (!admin) {
+            return res.status(401).json({ message: "please log infirst" })
+        }
+        const posts = await Post.find({}).populate("createdBy", "username phoneNumber profilepic").sort({createdAt:-1});
+        res.status(200).json(posts);
+    } catch (error) {
+        console.error("❌ Fetch Posts Error:", error); 
+        res.status(500).json({ error: "Internal server error", message: error.message });
+    }
+};
+
+export const deletePost = async (req,res)=>{
+    const {postId}= req.params
+    try {
+        const admin = await Admin.findById(req.admin.id)
+        if (!admin) {
+            return res.status(401).json({ message: "please log infirst" })
+        }
+        const post = await Post.findByIdAndDelete(postId)
+        if(!post){
+            res.status(401).json({message:"no post found with this id"})
+        }
+
+        await User.findByIdAndUpdate(post.createdBy,{$pull:{posts:postId}},{new:true})
+        res.json({message:"post deleted succesfully"})
+    } catch (error) {
+        console.error(error.message)
+    }
+}
+
+//get the reported posts
+export const  getReported = async (req,res)=>{
+    try{
+        const admin = await Admin.findById(req.admin.id)
+        if (!admin) {
+            return res.status(401).json({ message: "please log infirst" })
+        }
+        const all = await ReportedPost.find({}).sort({ createdAt: -1 }).populate("postId", "image").populate("userId","username")
+        if(!all){
+            return res.status(401).json({message:"no reported post found"})
+        }
+        res.json(all)
+    }catch(error){
+        console.error("failed to load the posts",error)
+        res.status(400).json(error.message)
+    }
+}
+
+///VIEW ONE REPORT
+export const oneReport = async (req, res) => {
+    const { postId } = req.params;
+
+    try {
+        const admin = await Admin.findById(req.admin.id);
+        if (!admin) {
+            return res.status(401).json({ message: "Please log in first" });
+        }
+
+        const report = await ReportedPost.findById(postId)
+        .populate({
+            path:"postId",
+            select:" productName description image createdBy",
+            populate:{
+                path:"createdBy",
+                select:"username profilepic email phoneNumber"
+            }
+        })
+            .populate("userId", "username");
+
+        if (!report) {
+            return res.status(404).json({ message: "The post reported with this ID does not exist" });
+        }
+
+        res.status(200).json(report);
+    } catch (error) {
+        console.error("Failed to load the post:", error);
+        res.status(500).json({ message: error.message });
+    }
+};
+
+
+//get all the userreports
+export const getReports = async (req, res) => {
+    try {
+        const admin = await Admin.findById(req.admin.id)
+        if (!admin) {
+            return res.status(401).json({ message: "please log in first" })
+        }
+        const all = await Report.find({}).sort({ createdAt: -1 })
+        if (!all) {
+            return res.status(401).json({ message: "no reported account found" })
+        }
+        res.json(all)
+    } catch (error) {
+        console.error("failed to load the posts", error)
+        res.status(400).json(error.message)
+    }
+}
+

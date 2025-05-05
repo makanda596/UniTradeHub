@@ -213,27 +213,27 @@ const UserProfile = () => {
                           <img
                             src={post?.image}
                             alt={post?.productName}
-                            className="w-full h-48 object-cover"
+                            className="w-full h-48 object-contain"
                           />
-                          <span className="absolute top-3 left-3 bg-white/90 text-xs px-2 py-1 rounded-full">
+                          <span className="absolute top-2 left-2 bg-white/90 text-xs px-2 py-1 rounded-full">
                             {timeAgo(post.createdAt)}
                           </span>
                         </div>
 
-                        <div className="p-4">
+                        <div className="p-2">
                           <Link to={`/Onepost/${post._id}`}>
                           <div className="flex items-start justify-between">
                             
                               <h4 className="font-bold text-gray-800">{post.productName}</h4>
                             </div>
-                                                    <p className="mt-2 mb-4 text-gray-600 text-sm line-clamp-2">{post.description.length > 60 ? (<p>{post.description.slice(0, 60)}...</p>) : (<>{post.description}</>)}</p>
+                                                    <p className="mt-1 mb-1 text-gray-600 text-sm line-clamp-1">{post.description.length > 60 ? (<p>{post.description.slice(0, 60)}...</p>) : (<>{post.description}</>)}</p>
                                                   </Link>
-                          <SavePost />
+                          <SavePost postId={post._id} />
 
                         </div>
                         
                       </div>
-                    ))}
+                    ))}  
                   </div>
                 ) : (
                   <div className="text-center py-12">
