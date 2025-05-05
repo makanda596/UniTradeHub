@@ -41,6 +41,7 @@ app.use('/admin', adminRoutes)
 app.use('/reviews', ReviewRoutes)
 app.use('/reports', ReportRoutes)
 app.use('/carts', CartRoutes)
+app.use('/admin', adminRoutes)
 
 const PORT = process.env.PORT || 6000;
 const MONGO_URL= process.env.MONGO_URL

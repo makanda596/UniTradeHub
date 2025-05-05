@@ -576,3 +576,94 @@ export const EMAIL_REVIEW_TEMPLATE = `
 </body>
 </html>
 `;
+export const NEW_POST_TEMPLATE = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>New Product Listed</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .header {
+      background: linear-gradient(to right, #3A6EFF, #2E5BFF);
+      padding: 20px;
+      text-align: center;
+      color: white;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .content {
+      background: #fff;
+      padding: 25px;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .product-image {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .product-info h2 {
+      color: #2E5BFF;
+      margin-bottom: 10px;
+    }
+
+    .product-info p {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .cta-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 25px;
+      background-color: #2E5BFF;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🛍️ New Item Listed by {seller}</h1>
+  </div>
+
+  <div class="content">
+    <img class="product-image" src="{image}" alt="Product Image" />
+    <div class="product-info">
+      <h2>{productName}</h2>
+      <p>{description}</p>
+    </div>
+    <a href="{ReviewUrl}" class="cta-button">🔍 View Product</a>
+  </div>
+
+  <div class="footer">
+    <p>You’re receiving this email because you’re part of Uni Trade Hub.</p>
+    <p>&copy; ${new Date().getFullYear()} Uni Trade Hub. All rights reserved.</p>
+  </div>
+</body>
+</html>
+`;

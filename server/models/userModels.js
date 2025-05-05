@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-        minlength:10
+        // minlength:10
     },
     password: { type: String, required: true, minlength: 8 },
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
@@ -25,7 +25,8 @@ const UserSchema = new mongoose.Schema({
     verificationCode: String,
     verificationCodeExpires: Date,
     resetPasswordToken: String,
-    resetPasswordExpires: Date
+    resetPasswordExpires: Date,
+    lastLogin :{type:Date}
 }, { timestamps: true });
 
 export const User = mongoose.model("User", UserSchema);

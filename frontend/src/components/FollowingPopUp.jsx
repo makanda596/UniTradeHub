@@ -25,13 +25,17 @@ const FollowingPopUp = ({ following ,loading  }) => {
                                         <img
                                             src={user?.followedId?.profilepic || "https://via.placeholder.com/50"}
                                             className="w-10 h-10 rounded-full border-2 border-blue-300"
-                                            alt="Profile"
+                                            alt="Profile" 
                                         />
                                         <div>
                                             <p>{user?.followedId?.username || "Unknown User"}</p>
-                                            <p className="text-sm text-gray-500">
-                                               Bio: {user?.followedId?.bio || "No bio yet"}
-                                            </p>
+                                                <p className="text-sm text-gray-500">
+                                                    Bio: {user?.followedId?.bio
+                                                        ? user.followedId.bio.length > 35
+                                                            ? <span>{user.followedId.bio.slice(0, 35)}..</span>
+                                                            : <span>{user.followedId.bio}</span>
+                                                        : "No bio available"}
+                                                </p>
                                         </div>
                                     </div>
                                     </Link>

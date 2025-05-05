@@ -1,6 +1,6 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv'
-import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, SIGNUP_SUCCESS_TEMPLATE, EMAIL_REVIEW_TEMPLATE } from '../Email.js/Emailtemplates.js';
+import { PASSWORD_RESET_REQUEST_TEMPLATE, PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, SIGNUP_SUCCESS_TEMPLATE, EMAIL_REVIEW_TEMPLATE, NEW_POST_TEMPLATE } from '../Email.js/Emailtemplates.js';
 dotenv.config()
 
 const SMTP_API = process.env.SMTP_KEY
@@ -139,6 +139,40 @@ export const sendReviewsEmail = async (email, ReviewUrl) => {
             subject: "New Review Made",
             html: EMAIL_REVIEW_TEMPLATE.replace("{ReviewUrl}", ReviewUrl),
             text: "Check out new Reviews Made just for you",
+        });
+
+    } catch (error) {
+        throw new Error(`Email delivery failed: ${error.message}`);
+    }
+};
+
+
+
+export const sendNewPost = async (email, postUrl, { productName, description, image, seller }) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: SMTP_API,
+            port: PORT_API,
+            secure: false,
+            auth: {
+                user: LOGIN_API,
+                pass: MASTER_API,
+            },
+        });
+
+        const htmlContent = NEW_POST_TEMPLATE
+            .replace("{ReviewUrl}", postUrl)
+            .replace("{productName}", productName)
+            .replace("{description}", description)
+            .replace("{image}", image)
+            .replace("{seller}", seller);
+
+        await transporter.sendMail({
+            from: EMAIL,
+            to: email,
+            subject: " New Product Just Listed!",
+            html: htmlContent,
+            text: `New product: ${productName} listed by ${seller}. Check it out here: ${postUrl}`,
         });
 
     } catch (error) {

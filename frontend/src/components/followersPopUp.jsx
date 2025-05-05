@@ -48,9 +48,14 @@ const FollowersPopUp = ({ followers, loading, error }) => {
                                         <p className="font-medium text-gray-800">
                                             {user?.followerId?.username || "Unknown User"}
                                         </p>
-                                        <p className="text-sm text-gray-500">
-                                            {user?.followerId?.bio || "No bio available"}
-                                        </p>
+                                            <p className="text-sm text-gray-500">
+                                                Bio: {user?.followerId?.bio
+                                                    ? user.followerId.bio.length > 35
+                                                        ? <span>{user.followerId.bio.slice(0, 35)}..</span>
+                                                        : <span>{user.followerId.bio}</span>
+                                                    : "No bio available"}
+                                            </p>
+
                                     </div>
                                     </div></Link>
                               

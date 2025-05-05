@@ -1,14 +1,14 @@
 import { Post } from '../models/postModel.js';
 import {User} from '../models/userModels.js'
 import cloudinary from '../utilis/cloudinary.js';
+import { sendNewPost } from '../utilis/sendEmail.js';
 
-
- export const createPost = async (req, res) => {
+export const createPost = async (req, res) => {
     const { productName, description, category, image } = req.body;
 
     try {
-        if (!productName || !description || !category) {
-            return res.status(400).json({ error: "All fields are required." });
+        if (!productName || !description || !category || !image) {
+            return res.status(400).json({ error: "All fields including image are required." });
         }
 
         const existingUser = await User.findById(req.user.id);
@@ -16,16 +16,13 @@ import cloudinary from '../utilis/cloudinary.js';
             return res.status(404).json({ success: false, message: "User not found" });
         }
 
-        if (!image) {
-                    return res.status(400).json({ error: "No image provided." });
-                }
+        const uploadResponse = await cloudinary.uploader.upload(image);
 
-                const uploadResponse = await cloudinary.uploader.upload(image);
         const post = new Post({
             productName,
             description,
             category,
-             image: uploadResponse.secure_url ,
+            image: uploadResponse.secure_url,
             createdBy: existingUser._id,
         });
 
@@ -33,18 +30,33 @@ import cloudinary from '../utilis/cloudinary.js';
         existingUser.posts.push(savedPost._id);
         await existingUser.save();
 
-        res.status(201).json({ 
-            message: "Post created successfully!", 
-            post: savedPost 
-        });
+        const otherUsers = await User.find({ _id: { $ne: existingUser._id } }, { email: 1 });
+        const postUrl = `https://unitradehubs.onrender.com/Onepost/${savedPost._id}`;
+
+        for (const user of otherUsers) {
+            if (user.email) {
+                try {
+                    await sendNewPost(user.email, postUrl, {
+                        productName: savedPost.productName,
+                        description: savedPost.description,
+                        image: savedPost.image,
+                        seller: existingUser.username
+                    });
+                } catch (err) {
+                    console.warn(`Failed to email ${user.email}: ${err.message}`);
+                }
+            }
+        }
+
+        res.status(201).json({ message: "Post created successfully!", post: savedPost });
+
     } catch (error) {
         console.error("❌ Post Creation Error:", error);
-        res.status(500).json({ 
-            error: "Internal server error", 
-            message: error.message 
-        });
-    } 
+        res.status(500).json({ error: "Internal server error", message: error.message });
+    }
 };
+
+
 //GETING OF ALL POSTS
 export const getpost= async (req, res) => {
     try {

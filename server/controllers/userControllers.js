@@ -162,7 +162,8 @@ export const login = async (req, res) => {
         if (!isPasswordCorrect) {
             return res.status(400).json({ message: "Incorrect password" });
         }
-
+        user.lastLogin = new Date()
+        await user.save()
         res.status(200).json({
             message: "User logged in",
             user: {
@@ -442,7 +443,7 @@ export const forgotPassword = async (req, res) => {
 
         const resetURL = `https://unitradehubs.onrender.com/ResetPassword/${resetToken}`
         await sendEmail(email, resetURL);
-
+ 
         res.status(200).json({ message: 'Reset email sent' });
     } catch (error) {
         res.status(500).json({ message: 'Error sending email' });

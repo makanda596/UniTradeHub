@@ -1,106 +1,213 @@
-import bcrypt from "bcryptjs"
-import { adminGenerateToken } from "../utilis/adminGenerateToken.js"
-import { Admin } from "../models/adminModels.js"
-export const adminlogin = async(req,res)=>{
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import { Admin } from '../models/adminModels.js';
+import { User } from '../models/userModels.js';
 
-    const {email,password}=req.body
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.SECTRET_KEY, { expiresIn: '20mins' });
+};
+
+export const adminSignup = async (req, res) => {
     try {
-    
-        const admin = await Admin.findOne({email})
-        if(!admin){
-            res.status(404).json({message: 'Email does not exist'})
+        const { username, password } = req.body;
+
+        // Validate input
+        if (!username || !password) {
+            return res.status(400).json({ message: 'Please provide both username and password' });
         }
-        const ispassword = bcrypt.compare(admin.password, password)
-        if(!ispassword){
-            res.status(404).json({message: 'inccorect password'})
+
+        // Check if admin already exists
+        const existingAdmin = await Admin.findOne({ username });
+        if (existingAdmin) {
+            return res.status(409).json({ message: 'Admin with this username already exists' });
         }
-        
-        adminGenerateToken(res,admin)
-       await  admin.save()
-        req.session.admin={
-            id:admin._id,
-            email:admin.email,
-        }
-        req.session.save((err) => {
-            if (err) {
-                console.error("Session save error:", err);
-                return res.status(500).json({ message: "Session error" });
-            }
-            res.json({ message: "Login successful", user: req.session.user });
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const newAdmin = new Admin({
+            username,
+            password: hashedPassword,
+        });
+
+        const savedAdmin = await newAdmin.save();
+        res.status(201).json({
+            message: 'Admin created successfully',
+            admin: {
+                _id: savedAdmin._id,
+                username: savedAdmin.username,
+            },
         });
     } catch (error) {
-        res.status(400).json(error.message)
+        console.error('Error during admin signup:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-}
+};
 
-export const updateAdmin = async (req,res)=>{
-    const {id} = req.params
-    const {email,password} = req.body
+export const adminLogin = async (req, res) => {
     try {
-        const adminId = await Admin.findById(id)
-        if(!adminId) {
-            res.status(400).json({message:"user not found"})
-        }
-        //update the email 
-        const adminEmail = await Admin.find({email})
-        if (adminEmail && adminEmail._id.toString() !== id) {
-            return res.status(400).json({ message: "Email already exists. Please use a different one." });
+        const { username, password } = req.body;
+
+        // Validate input
+        if (!username || !password) {
+            return res.status(400).json({ message: 'Please provide both username and password' });
         }
 
-            if(password){
-            let updatedfields = {...req.body}
-            //updatepassword
-        const hashpassword = await bcrypt.hash(password,10)
-        updatedfields.password = hashpassword
-            }
-
-        const updateadmin = await Admin.findByIdAndUpdate({_id:id}, updatedfields , {new:true})
-        if(!updateadmin){
-            res.satus(401).json({message:"failed to update the infomation"})
+        const admin = await Admin.findOne({ username });
+        if (!admin) {
+            return res.status(401).json({ message: 'Invalid credentials' }); // Use 401 for unauthorized
         }
-        res.status(200).json({ message: "admin updated successfully", updateadmin });
 
+        const isPasswordMatch = await bcrypt.compare(password, admin.password);
+        if (!isPasswordMatch) {
+            return res.status(401).json({ message: 'Invalid credentials' }); // Use 401 for unauthorized
+        }
 
+        const token = generateToken(admin._id);
+
+        res.status(200).json({
+            message: 'Admin logged in successfully',
+            admin: {
+                _id: admin._id,
+                username: admin.username,
+            },
+            token,
+        });
     } catch (error) {
-        console.error("❌ Update Error:", error);
-        res.status(500).json({ error: "Internal server error", message: error.message });
+        console.error('Error during admin login:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-}
-
-export const adminprofile = (req, res) => {
-    if(req.session.admin){
-        return res.send( {
-            message:"admin details",
-            admin:req.session.admin
-        })
-    }
-    else{
-        res.status(401).json({ message: "you need to log in" })
-
-    }
-}
-
-export const adminsignup = async (req,res)=>{
-    const {email,password}= req.body
+};
+export const profile = async (req, res) => {
     try {
-        const existingadmin = await Admin.findOne({email})
-        if (existingadmin){
-            res.status(404).json({message:"email already exist"})
+        // Assuming req.user.id is populated after authentication
+        const admin = await Admin.findById(req.admin.id).select("-password"); // Use the correct method to find by ID
+        if (!admin) {
+            return res.status(404).json({ message: "No admin found" });
         }
-        const hashpassword = await bcrypt.hash(password,10)
-
-        const admin = new Admin({
-            email, password:hashpassword
-        })
-        await admin.save()
-        res.status(200).json({message:"user signed up", 
-            admin:{
-                ...admin._doc,
-                password: undefined,
-            }
-        }       
-        )
+        return res.json(admin);
     } catch (error) {
-       res.status(404).json(error.message) 
+        console.error(error);
+        return res.status(500).json({ message: error.message });
+    }
+};
+
+
+export const update = async (req, res) => {
+    const { username, password } = req.body;
+
+    try {
+        const adminToUpdate = await Admin.findById(req.admin.id);
+        if (!adminToUpdate) {
+            return res.status(404).json({ message: 'Admin not found' });
+        }
+
+        if (username) {
+            const existingAdmin = await Admin.findOne({ username });
+            if (existingAdmin && existingAdmin._id.toString() !== req.admin.id) {
+                return res.status(400).json({ message: 'Username already exists. Please try another.' });
+            }
+            adminToUpdate.username = username;
+        }
+
+        if (password) {
+            if (password.length < 8) {
+                return res.status(400).json({ message: 'Password must be at least 8 characters long.' });
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+            adminToUpdate.password = hashedPassword;
+        }
+
+        const updatedAdmin = await adminToUpdate.save();
+
+        res.status(200).json({
+            message: 'Admin updated successfully',
+            admin: {
+                _id: updatedAdmin._id,
+                username: updatedAdmin.username,
+            },
+        });
+    } catch (error) {
+        console.error('Error during admin update:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
+
+export const checkAuth = async (req, res) => {
+    try {
+        const existingAdmin = await Admin.findById(req.admin.id).select('-password');
+        if (!existingAdmin) {
+            return res.status(404).json({ success: false, message: 'Admin not found' });
+        }
+
+        res.status(200).json({ success: true, admin: existingAdmin });
+    } catch (error) {
+        console.error('Error in checkAuth:', error);
+        res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+    }
+};
+
+export const logout = async (req, res) => {
+    try {
+        // Consider what "logout" means for an API. Often, it involves the client discarding the token.
+        // Clearing the cookie on the server-side can be a good practice if you're using cookies for session management.
+        res.clearCookie('token', { httpOnly: true, secure: true, sameSite: 'None' });
+        res.status(200).json({ message: 'Admin logged out successfully' });
+    } catch (error) {
+        console.error('Error during logout:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
+
+//getting all users
+
+export const getUsers = async (req,res)=>{
+    try {
+        const admin = await Admin.findById(req.admin.id)
+        if(!admin){
+            res.json({message:"please log in "})
+        }
+        const users = await User.find({}).sort({createdAt:-1})
+        if(!users){
+            res.status(401).json({message:"users not found"})
+        }
+        res.json(users)
+    } catch (error) {
+     console.error("error getting users",error)
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+ 
+    }
+}
+
+//counting of users
+export const countUsers = async (req,res)=>{
+    try {
+        const admin = await Admin.findById(req.admin.id)
+        if(!admin){
+            res.json({message:"please log infirst"})
+        }
+        const count = await User.countDocuments()
+        res.json(count)
+    } catch (error) {
+        console.error("error counting users",error)
+        res.json({message:"error counting the users"})
+    }
+}
+
+//get one user
+export const oneUser = async (req,res)=>{
+    const {userId} = req.params
+    try {
+        const admin = await Admin.findById(req.admin.id)
+        if (!admin) {
+          return  res.status(401).json({ message: "please log infirst" })
+        }
+        const user = await User.findById(userId)
+        if(!user){
+        return    res.status(401).json({message:"no user found with this id"})
+        }
+        res.status(200).json(user)
+    } catch (error) {
+        console.error("error counting users", error)
+        res.json({ message: "error counting the users" }) 
     }
 }

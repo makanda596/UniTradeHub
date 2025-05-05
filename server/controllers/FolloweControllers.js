@@ -48,9 +48,9 @@ export const getFollowers = async (req, res) => {
         const user = await User.findById({_id:userId})
             .populate({
                 path: "followers",
-                populate: { path: "followerId", select: "username  profilepic " } // Populate follower details
+                populate: { path: "followerId", select: "username  profilepic bio" } 
             })
-            .select("username email profilepic following");
+            .select("username email profilepic following bio");
 
         if (!user) {
             return res.status(400).json({ message: "User not found" });
@@ -71,9 +71,9 @@ export const getFollowing = async (req, res) => {
         const user = await User.findById({_id:userId})
             .populate({
                 path: "following",
-                populate: { path: "followedId", select: "username email profilepic" } // Populate followed user details
+                populate: { path: "followedId", select: "username email profilepic bio" }
             })
-            .select("username email profilepic following");
+            .select("username email profilepic following bio");
 
         if (!user) {
             return res.status(400).json({ message: "User not found" });
