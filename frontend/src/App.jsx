@@ -91,7 +91,6 @@ function App() {
 
   return (
     
-     <BrowserRouter>
       <Routes>
         <Route path="/ResetPassword/:token" element={<ResetPassword />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
@@ -123,7 +122,7 @@ function App() {
         <Route path='/admin' element={<ProtectedRoute><AdminHome /></ProtectedRoute>}/>
        
       </Routes>
-    </BrowserRouter>
+  
   );
 }
 
