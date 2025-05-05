@@ -5,6 +5,7 @@ import { sendReviewsEmail } from "../utilis/sendEmail.js";
 // MAKING OF A REVIEW TO A SELLER
 export const MakeReview = async (req, res) => {
     const senderId = req.user.id;
+    const {recieverId} = req.params
     const { text } = req.body;
 
     try {
@@ -22,7 +23,7 @@ export const MakeReview = async (req, res) => {
             recieverId,
             text 
         });
-        const ReviewUrl = `https://unitradehub-kesf.onrender.com/customerreviews`
+        const ReviewUrl = `https://unitradehubs.onrender.com//customerreviews`
         await sendReviewsEmail(existingUser.email, ReviewUrl)
         await newReview.save();
 
