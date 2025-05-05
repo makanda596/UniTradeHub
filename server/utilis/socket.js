@@ -10,7 +10,7 @@ const server = http.createServer(app);
 const URL = process.env.FRONTEND_URL
 const io = new Server(server, {
         cors: {
-        origin: URL, 
+        origin:"https://unitradehubs.onrender.com", 
         credentials: true,
     },
 });
