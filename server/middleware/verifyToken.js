@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { User } from '../models/userModels.js';
 import dotenv from 'dotenv'
 dotenv.config()
+// ll
 export const verifyToken = async (req, res, next) => {
     try {
         let token = req.headers.authorization?.split(" ")[1]; 
