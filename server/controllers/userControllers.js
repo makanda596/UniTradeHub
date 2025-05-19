@@ -91,7 +91,6 @@ export const signup = async (req, res) => {
                 type: "user",
             });
             await alert.save();
-            console.log("Admin alert:", alert);
         } catch (alertError) {
             console.warn("User created but failed to save alert:", alertError);
         }
