@@ -676,3 +676,92 @@ export const NEW_POST_TEMPLATE = `
 </html>
 `;
 
+export const ACCOUNT_SUSPENSION_TEMPLATE = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Account Suspension Alert</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    .header {
+      background: linear-gradient(to right, #FF3A3A, #FF2E2E);
+      padding: 20px;
+      text-align: center;
+      color: white;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .content {
+      background: #fff;
+      padding: 25px;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .notice h2 {
+      color: #FF2E2E;
+      margin-bottom: 10px;
+    }
+
+    .notice p {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .highlight {
+      font-weight: bold;
+      color: #FF2E2E;
+    }
+
+    .cta-button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 25px;
+      background-color: #FF2E2E;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #999;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🚫 Admin Account Suspended</h1>
+  </div>
+
+  <div class="content">
+    <div class="notice">
+      <h2>Dear Admin ,</h2>
+      <p>We've detected <span class="highlight">multiple unsuccessful login attempts</span> to your Uni Trade Hub admin account.</p>
+      <p>As a security measure, your account has been <span class="highlight">temporarily suspended</span> to prevent unauthorized access.</p>
+      <p>If this activity was not initiated by you, or if you believe this suspension is a mistake, please contact support immediately using the link below.</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>This security notification was sent to {email} because you are registered as an admin on Uni Trade Hub.</p>
+    <p>&copy; ${new Date().getFullYear()} Uni Trade Hub. All rights reserved.</p>
+  </div>
+</body>
+</html>
+`;
+

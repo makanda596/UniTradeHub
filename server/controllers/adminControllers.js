@@ -7,8 +7,7 @@ import ReportedPost from '../models/ReportedPost.js';
 import { Report } from '../models/Report.js';
 import { Suspended } from '../models/SuspendedModel.js';
 import { Alert } from '../models/Alert.js';
-
-
+import { sendSuspensionEmail } from '../utilis/sendEmail.js';
 
 
 
@@ -33,7 +32,6 @@ export const adminLogin = async (req, res) => {
 
     try {
         const { username, password } = req.body;
-
         if (!username || !password) {
             return res.status(400).json({ message: 'Please provide both username and password' });
         }
@@ -48,7 +46,9 @@ export const adminLogin = async (req, res) => {
             admin.limit +=1
             if(admin.limit >=2){
                 admin.limitUntil = new Date(Date.now()+24*60*60*1000)
+                await sendSuspensionEmail()
             } 
+            console.log(admin.limit)
           await  admin.save()
             return res.status(401).json({ message: 'Invalid credentials' });
         }

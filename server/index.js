@@ -21,8 +21,8 @@ const URL = process.env.FRONTEND_URL
 app.use(helmet())
 app.use(cors(
     {
-        origin: "https://unitradehubs.onrender.com",
-        // origin:"http://localhost:5173",
+        // origin: "https://unitradehubs.onrender.com",
+        origin:"http://localhost:5173",
         credentials: true,
     }
 ))
