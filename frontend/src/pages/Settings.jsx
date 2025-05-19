@@ -7,6 +7,7 @@ import { BiLogOut } from "react-icons/bi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { IoMdInformationCircleOutline } from "react-icons/io";
 import Swal from "sweetalert2";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const Settings = () => {
     const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ const Settings = () => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(false);
     const { logout } = useAuthStore();
+    const navigate = useNavigate()
 
     useEffect(() => {
         fetchUser();
@@ -85,6 +87,8 @@ const Settings = () => {
                 return;
             }
 
+            const emailChanged = user?.email !== formData?.email
+
             if (formData.password && formData.password !== formData.confirmPassword) {
                 Swal.fire({
                     icon: 'error',
@@ -113,6 +117,12 @@ const Settings = () => {
             );
 
             setUser(response.data.user);
+            if (emailChanged) {
+                localStorage.setItem("changedemail", formData.email); // Not user.tempEmail
+                navigate("/verify-email-change");
+                return; // Skip reload if navigating
+            }
+            
             Swal.fire({
                 icon: 'success',
                 title: 'Success',

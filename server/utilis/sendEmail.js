@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv'
 import {
-    PASSWORD_RESET_REQUEST_TEMPLATE, ACCOUNT_SUSPENSION_TEMPLATE,
+    PASSWORD_RESET_REQUEST_TEMPLATE, ACCOUNT_SUSPENSION_TEMPLATE, VERIFY_EMAIL_CHANGE_TEMPLATE, EMAIL_CHANGE_SUCCESS_TEMPLATE, ACCOUNT_DELETED_EMAIL_TEMPLATE,
      PASSWORD_RESET_SUCCESS_TEMPLATE, VERIFICATION_EMAIL_TEMPLATE, SIGNUP_SUCCESS_TEMPLATE, EMAIL_REVIEW_TEMPLATE, NEW_POST_TEMPLATE } from '../Email.js/Emailtemplates.js';
 dotenv.config()
 
@@ -94,7 +94,60 @@ export const sendEmailVerification = async (email, verificationCode) => {
         throw new Error(`Email delivery failed: ${error.message}`);
     }
 }
+//sending of chaneg email
+export const sendEmailChange = async (email, verificationCode) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: SMTP_API,
+            port: PORT_API,
+            secure: false,
+            auth: {
+                user: LOGIN_API,
+                pass: MASTER_API,
+            },
+        });
+        const subject = "Email Verification";
 
+        await transporter.sendMail({
+            from: EMAIL,
+            to: email,
+            subject,
+            html: VERIFY_EMAIL_CHANGE_TEMPLATE.replace("{verificationCode}", verificationCode),
+            text: `Your verification code is: ${verificationCode}`,
+        });
+
+    } catch (error) {
+        console.error('Email failed:', error);
+        throw new Error(`Email delivery failed: ${error.message}`);
+    }
+}
+
+//confrim succes of email change
+export const SuccessEmailChange = async (email) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: SMTP_API,
+            port: PORT_API,
+            secure: false,
+            auth: {
+                user: LOGIN_API,
+                pass: MASTER_API,
+            },
+        });
+        const subject = "succesfull Email Verification";
+
+        await transporter.sendMail({
+            from: EMAIL,
+            to: email,
+            subject,
+            html: EMAIL_CHANGE_SUCCESS_TEMPLATE.replace("{email}", email),
+        });
+
+    } catch (error) {
+        console.error('Email failed:', error);
+        throw new Error(`Email delivery failed: ${error.message}`);
+    }
+}
 //SENDING OF A SUCCESFULLY SIGNED UP
 export const sendConfirmationEmail = async (email) => {
     try {
@@ -148,8 +201,6 @@ export const sendReviewsEmail = async (email, ReviewUrl) => {
         throw new Error(`Email delivery failed: ${error.message}`);
     }
 };
-
-
 
 export const sendNewPost = async (email, postUrl, { productName, description, image, seller }) => {
     try {
@@ -210,6 +261,32 @@ export const sendSuspensionEmail = async () => {
     }
 };
 
+//sending and email for someone who just left
+export const sendEmailDeleted = async (email) => {
+    try {
+        const transporter = nodemailer.createTransport({
+            host: SMTP_API,
+            port: PORT_API,
+            secure: false,
+            auth: {
+                user: LOGIN_API,
+                pass: MASTER_API,
+            },
+        });
+        const subject = "Account deleted ";
+
+        await transporter.sendMail({
+            from: EMAIL,
+            to: email,
+            subject,
+            html: ACCOUNT_DELETED_EMAIL_TEMPLATE.replace("{email}", email),
+            text: subject,
+        });
+    } catch (error) {
+        console.error("Email failed:", error);
+        throw new Error(`Email delivery failed: ${error.message}`);
+    }
+};
 
 
 

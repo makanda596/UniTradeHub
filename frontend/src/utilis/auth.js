@@ -18,6 +18,8 @@ export const useAuthStore = create((set,get) => ({
     CountReviews:null,
     count:null,
     email:"",
+    flash:[],
+    Uflash:[],
     // Signup method
     signup: async (username, email, phoneNumber, password, gender) => {
         set({ isLoading: true, error: null });
@@ -159,8 +161,6 @@ export const useAuthStore = create((set,get) => ({
 
     },
    
-
-
     connectSocket: () => {
         const { user } = get();
         if (!user || get().socket?.connected) return;
@@ -231,4 +231,34 @@ countReviwes:async()=>{
                     console.error(error.message);
                 
             }},
+
+    //user flash sales
+    UserFlash: async () => {
+        try {
+            const token = localStorage.getItem("token")
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/flash/userFlash`, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            set({ Uflash: response.data.userFlash })
+            console.log(response.data.userFlash)
+        } catch (error) {
+            console.error(error.message)
+        }
+    },        
+            //all flashsales
+             allFlash: async () => {
+                    try {
+                        const token = localStorage.getItem("token")
+                        const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/flash/getFlash`, {
+                            headers: { Authorization: `Bearer ${token}` }
+                        })
+                        set({ flash: response.data.flashsales })
+                        console.log(response.data.flashsales)
+                    } catch (error) {
+                        console.error(error.message)
+                    }
+                },
+
+            
+            
 }));

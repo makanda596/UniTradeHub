@@ -3,7 +3,8 @@ import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import { Post } from "../models/postModel.js";
-import { sendEmail, sendRestPasswordConfirmationEmail, sendConfirmationEmail, sendEmailVerification } from "../utilis/sendEmail.js";
+import { sendEmail, sendRestPasswordConfirmationEmail, 
+    sendConfirmationEmail, sendEmailVerification, sendEmailChange, SuccessEmailChange, sendEmailDeleted } from "../utilis/sendEmail.js";
 import dotenv from 'dotenv';
 import { Suspended } from "../models/SuspendedModel.js";
 import { Alert } from "../models/Alert.js";
@@ -97,10 +98,7 @@ export const signup = async (req, res) => {
 
         res.status(201).json({
             message: "User signed up successfully",
-            user: {
-                ...user._doc,
-                password: undefined, 
-            },
+           
         });
 
     } catch (err) {
@@ -108,11 +106,7 @@ export const signup = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
-
-
-
 //EMAIL VERIFICATION RESEND CODE
-
 export const EmailVerificationResend = async (req, res) => {
     const { email } = req.body;
 
@@ -150,7 +144,6 @@ export const EmailVerificationResend = async (req, res) => {
         });
     }
 };
-
 //EMAIL VERIFICATION 
 export const EmailVerification = async (req, res) => {
     const { code } = req.body
@@ -175,7 +168,6 @@ export const EmailVerification = async (req, res) => {
         return res.status(400).json(error.message)
     }
 }
-
 // LPGIN SECTION
 export const login = async (req, res) => {
      const generateToken = (id) => {
@@ -242,8 +234,6 @@ export const login = async (req, res) => {
     }
 };
 
-
-
 //LOGOUT SECTION PART
 export const logout = async (req, res) => {
     try {
@@ -254,7 +244,6 @@ export const logout = async (req, res) => {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 };
-
 //GETTING ALL THE USERS
 export const getUsers = async (req, res) => {
     const userId = req.user.id
@@ -268,7 +257,6 @@ export const getUsers = async (req, res) => {
         res.status(400).json(error.message)
     }
 }
-
 //USER PROFILE
 export const profile = async (req, res) => {
     try {
@@ -282,14 +270,12 @@ export const profile = async (req, res) => {
 
     }
 }
-
 //UPDATING SECTION
 export const updateUser = async (req, res) => {
     const { id } = req.params;
-    const { username, email, phoneNumber, password, bio, location } = req.body;
+    const { username, email, phoneNumber, password, bio, location, tempEmail } = req.body;
 
     try {
-        // Check if the user exists
         const user = await User.findById({ _id: id });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -299,7 +285,6 @@ export const updateUser = async (req, res) => {
             return res.status(400).json({ message: "The username should not be more than 15 characters" });
         }
 
-        // Check if the new username is already taken (excluding the current user)
         if (username) {
             const existingUsername = await User.findOne({ username });
             if (existingUsername && existingUsername._id.toString() !== id) {
@@ -307,15 +292,28 @@ export const updateUser = async (req, res) => {
             }
         }
 
-        // Check if the new email is already taken (excluding the current user)
-        if (email) {
+        if (email && email !== user.email) {
             const existingEmail = await User.findOne({ email });
             if (existingEmail && existingEmail._id.toString() !== id) {
                 return res.status(400).json({ message: "Email already exists. Please use a different one." });
             }
-        }
 
-        // Check if the new phone number is already taken (excluding the current user)
+            const verification = crypto.randomBytes(2).toString("hex").toUpperCase();
+            const verificationExpiresAt = Date.now() + 10 * 60 * 1000;
+
+            user.tempEmail = email;
+            user.verificationCode = verification;
+            user.verificationCodeExpires = verificationExpiresAt;
+
+            await user.save();
+            await sendEmailChange(email, user.verificationCode)
+                        return res.status(200).json({
+                message: "Verification code sent to new email.",
+                requiresVerification: true,
+            });
+        }
+        
+
         if (phoneNumber) {
             const existingPhone = await User.findOne({ phoneNumber });
             if (existingPhone && existingPhone._id.toString() !== id) {
@@ -324,7 +322,6 @@ export const updateUser = async (req, res) => {
         }
 
 
-        // If password is being updated, hash it
         let updatedFields = { ...req.body };
         if (password) {
             if (password.length < 8) {
@@ -334,8 +331,6 @@ export const updateUser = async (req, res) => {
             updatedFields.password = hashedPassword;
         }
 
-
-        // Update user details
         const updatedUser = await User.findByIdAndUpdate({ _id: id }, updatedFields, { new: true });
 
         res.status(200).json({ message: "User updated successfully", updatedUser });
@@ -346,15 +341,86 @@ export const updateUser = async (req, res) => {
     }
 };
 
-//DELETING OF A USER
-export const deleteUser = async (req, res) => {
-    const { createdBy: userId } = req.user.id
+export const EmailChangeResend = async (req, res) => {
+    const { id } = req.params;
+
     try {
-        const user = await Post.findOneAndDelete(userId)
+        const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        await User.findByIdAndDelete(req.user.id)
+
+        const email = user.tempEmail;
+        if (!email) {
+            return res.status(400).json({ message: "No pending email change found." });
+        }
+
+        const verificationCode = crypto.randomBytes(2).toString("hex").toUpperCase();
+        const verificationCodeExpires = Date.now() + 10 * 60 * 1000; 
+
+        user.verificationCode = verificationCode;
+        user.verificationCodeExpires = verificationCodeExpires;
+        await user.save();
+        await sendEmailChange(email, verificationCode)
+        return res.status(200).json({
+            message: "New verification code sent to your new email",
+            email,
+        });
+
+    } catch (error) {
+        console.error("Email resend error:", error);
+        return res.status(500).json({
+            message: "Failed to resend verification code",
+            error: error.message,
+        });
+    }
+};
+
+//updating the email
+export const verifyEmailChange = async (req, res) => {
+    const { id } = req.params;
+    const { code } = req.body;
+
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (!user.verificationCode || !user.tempEmail) {
+            return res.status(400).json({ message: "No pending email change" });
+        }
+
+        if (user.verificationCodeExpires < Date.now()) {
+            return res.status(400).json({ message: "Verification code expired" });
+        }
+
+        if (user.verificationCode !== code.toUpperCase()) {
+            return res.status(400).json({ message: "Invalid verification code" });
+        }
+
+        user.email = user.tempEmail;
+        user.tempEmail = undefined;
+        user.verificationCode = undefined;
+        user.verificationCodeExpires = undefined;
+        await SuccessEmailChange(user.email)
+        await user.save();
+
+        res.status(200).json({ message: "Email updated successfully" });
+
+    } catch (err) {
+        console.error("Email verification error:", err);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+//DELETING OF A USER
+export const deleteUser = async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.user.id)
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        console.log(user.email)
+        await sendEmailDeleted(user?.email)
         res.status(200).json({ message: "User deleted successfully", user });
     } catch (error) {
         console.error("�� Delete Error:", error);

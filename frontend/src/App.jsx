@@ -30,6 +30,7 @@ import AdminHome from "./pages/admin/AdminHome.jsx";
 import Safety from "./pages/Safety.jsx";
 import { AdminAuthStore } from "./utilis/admin.js";
 import LoadingSpinner from "./components/LoadingSpinner.jsx";
+import VerifyEmailChange from "./pages/VerifyEmailChange.jsx";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -77,6 +78,9 @@ function App() {
   useEffect(() => {
     if (location.pathname !== '/EmailVerification') {
       localStorage.removeItem('email');
+    }
+    if (location.pathname !=='/verify-email-change'){
+      localStorage.removeItem('changedemail');
     }
   }, [location]);
   useEffect(() => {
@@ -134,6 +138,8 @@ function App() {
         <Route path="/Settings" element={<ProtectedRoute><Settings user={user} logout={logout} /></ProtectedRoute>} />
         <Route path="/Onepost/:postId" element={<ProtectedRoute><Onepost user={user} /></ProtectedRoute>} />
         <Route path="/saved" element={<ProtectedRoute><SavedPost user={user} /></ProtectedRoute>} />
+      <Route path="/verify-email-change" element={<ProtectedRoute><VerifyEmailChange id={user?._id} /></ProtectedRoute>} />
+
         <Route path="/customerreviews" element={<ProtectedRoute><Reviewspage user={user} /></ProtectedRoute>} />
         <Route path="/category/:categoryName" element={<CategoryDetails user={user} />} />
 

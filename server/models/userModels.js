@@ -4,9 +4,10 @@ const UserSchema = new mongoose.Schema({
     email: { type: String, required: true, unique: true },
     bio: { type: String, default: "" },
     location: { type: String, default: "" },
+    tempEmail: { type: String ,default:""},
     phoneNumber: {
         type: String,
-        required: true,
+        required: true,   
         unique: true,
         // minlength:10
     },
@@ -18,6 +19,7 @@ const UserSchema = new mongoose.Schema({
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "Following" }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Following" }],  
+    flash:[{type:mongoose.Schema.Types.ObjectId,ref:"Flashsale"}],
     reports:[{type:mongoose.Schema.Types.ObjectId, ref:"Report"}],
     isVerified: { default: false, type: Boolean },
     verificationCode: String,

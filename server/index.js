@@ -13,6 +13,7 @@ import { app, server } from "./utilis/socket.js"
 import ReviewRoutes from './routes/ReviewRoutes.js'
 import ReportRoutes from './routes/ReportRoutes.js'
 import CartRoutes from './routes/CartRoutes.js'
+import flashRoutes from './routes/flashRoutes.js'
 import helmet from "helmet"
 dotenv.config()
 //middleware
@@ -43,6 +44,7 @@ app.use('/admin', adminRoutes)
 app.use('/reviews', ReviewRoutes)
 app.use('/reports', ReportRoutes)
 app.use('/carts', CartRoutes)
+app.use('/flash',flashRoutes)
 app.use('/admin', adminRoutes)
 
 const PORT = process.env.PORT || 6000;

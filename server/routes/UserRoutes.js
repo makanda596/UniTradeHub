@@ -5,7 +5,7 @@ import {
   profile, updateUser, deleteUser, checkAuth, 
   EmailVerification, EmailVerificationResend,
   userprofile, usergetposts, countUserPost,
-deletePost,resetPassword,
+  deletePost, resetPassword, verifyEmailChange, EmailChangeResend,
  forgotPassword} from '../controllers/userControllers.js'
 import { verifyToken } from '../middleware/verifyToken.js'
 import { rateLimiter } from '../middleware/rateLimiter.js'
@@ -28,8 +28,10 @@ router.get('/countposts',verifyToken, countUserPost);
 router.delete("/delete/:postId", verifyToken , deletePost);
 router.get('/profile', verifyToken,profile)
 router.put('/update/:id' ,updateUser) 
+router.post('/verifyemailchange/:id', verifyEmailChange)
 router.delete('/delete',verifyToken, deleteUser)
 router.get('/profile/:id', userprofile)
+router.post('/resendChangecode/:id', EmailChangeResend) 
 router.post("/addcart/:postId", verifyToken, addToCart);
 router.post("/removecart/:postId", verifyToken , removeFromCart);
 
