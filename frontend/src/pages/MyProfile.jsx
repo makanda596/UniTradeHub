@@ -14,6 +14,7 @@ import { IoMdSettings } from "react-icons/io";
 import { RiCoupon2Line } from "react-icons/ri";
 import { FollowStore } from "../utilis/follow";
 import UserFollowSection from "../components/UserFollowSection";
+import ErrorMessage from "../components/ErrorMessage";
 
 const ProfilePage = ({ user, logout, userId }) => {
   const [countReviews, setCountReviews] = useState(0);
@@ -108,22 +109,7 @@ const ProfilePage = ({ user, logout, userId }) => {
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <Navbar user={user} />
-        <div className="container mx-auto px-4 py-8">
-          <div className="bg-white rounded-xl shadow-sm p-6 text-center">
-            <div className="text-red-500 text-xl mb-4">{error}</div>
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg"
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+    return (  <ErrorMessage error={error}/>)
   }
 
   return (

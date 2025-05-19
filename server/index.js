@@ -13,10 +13,12 @@ import { app, server } from "./utilis/socket.js"
 import ReviewRoutes from './routes/ReviewRoutes.js'
 import ReportRoutes from './routes/ReportRoutes.js'
 import CartRoutes from './routes/CartRoutes.js'
+import helmet from "helmet"
 dotenv.config()
 //middleware
 const URL = process.env.FRONTEND_URL
 
+app.use(helmet())
 app.use(cors(
     {
         origin: "https://unitradehubs.onrender.com",
@@ -30,7 +32,7 @@ app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 app.use(cookieParser())
 
-
+ 
 //routes
 app.use('/auth' ,UserRoutes)
 app.use('/chart', messageRoutes)

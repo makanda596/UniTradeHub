@@ -6,6 +6,7 @@ import Navbar from "../components/Navbar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Swal from "sweetalert2";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Reviewspage = ({  user }) => {
     const [reviews, setReviews] = useState([]);
@@ -95,23 +96,7 @@ const Reviewspage = ({  user }) => {
                     </div>
                 )}
 
-                {loading && (
-                    <div className="space-y-6">
-                        {[...Array(3)].map((_, i) => (
-                            <div key={i} className="bg-white p-6 rounded-xl shadow-sm">
-                                <div className="flex items-center mb-4">
-                                    <Skeleton circle width={48} height={48} className="mr-4" />
-                                    <div className="flex-1">
-                                        <Skeleton width={120} height={20} />
-                                        <Skeleton width={80} height={16} className="mt-1" />
-                                    </div>
-                                </div>
-                                <Skeleton count={2} className="mb-2" />
-                                <Skeleton width={100} height={16} />
-                            </div>
-                        ))}
-                    </div>
-                )}
+                {loading && (<LoadingSpinner/>                                )}
 
                 {!loading && reviews.length === 0 && (
                     <div className="bg-white rounded-xl shadow-sm p-4 text-center">

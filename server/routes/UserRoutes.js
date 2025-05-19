@@ -8,16 +8,19 @@ import {
 deletePost,resetPassword,
  forgotPassword} from '../controllers/userControllers.js'
 import { verifyToken } from '../middleware/verifyToken.js'
+import { rateLimiter } from '../middleware/rateLimiter.js'
+import { validateSignup } from '../middleware/validateSignup.js'
+import { loginValidationRules } from '../middleware/loginValidator.js'
 
 const router = express.Router()
 
-router.post('/signup', signup)
-router.post('/login', login)
+router.post('/signup', validateSignup, signup)
+router.post('/login', loginValidationRules,rateLimiter, login)
 router.post('/logout', logout)
 router.post('/forgot-password', forgotPassword);
 router.post('/ResetPassword/:token', resetPassword);
 router.post("/email-verification", EmailVerification)
-router.post('/resendcode', EmailVerificationResend)
+router.post('/resendcode', EmailVerificationResend) 
 router.get('/getUsers', verifyToken, getUsers)
 router.get('/check-auth', verifyToken, checkAuth)
 router.get("/userposts", verifyToken, usergetposts );

@@ -4,20 +4,27 @@ import { useAuthStore } from '../utilis/auth';
 import Navbar from '../components/Navbar';
 import { Link } from 'react-router-dom';
 import { FaTrash } from 'react-icons/fa';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const SavedPost = () => {
   const [posts, setPosts] = useState([]);
   const { countCarts, count } = useAuthStore();
+  const [loading,setLoading]=useState(true)
 
   const fetchCarts = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
+      if(!token){
+        setLoading(false)
+      }
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/carts/getCart`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPosts(response.data);
     } catch (error) {
       console.error(error.message);
+    }finally{
+      setLoading(false)
     }
   }, []);
 
@@ -38,7 +45,9 @@ const SavedPost = () => {
       console.error(error.message);
     }
   };
-
+  if(loading){
+    return <LoadingSpinner/>
+  }
   return (
     <>
       <Navbar />

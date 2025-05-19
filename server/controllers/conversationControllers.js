@@ -5,8 +5,6 @@ export const getConversation = async (req, res) => {
         const senderId = req.user?.id;
         const { receiverId } = req.params;
 
-        console.log("Sender ID:", senderId);
-        console.log("Receiver ID:", receiverId);
 
         if (!senderId || !receiverId) {
             return res.status(400).json({ error: "Invalid sender or receiver ID" });

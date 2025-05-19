@@ -10,12 +10,13 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { FaBookmark, FaEnvelope, FaComments, FaChartBar, FaArrowRight, FaShoppingCart } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../utilis/auth";
+import LoadingSpinner from "./LoadingSpinner";
+import ErrorMessage from "./ErrorMessage";
 
 const Dashboard = ({ user, userId }) => {
-    const [error, setError] = useState("");
-        const { countCarts, count}= useAuthStore()
+    const { countCarts, countReviwes,loading,CountReviews,count}= useAuthStore()
+    const [error,setError]=useState('')
         const[countposts,setCountposts] = useState(null)
-    const [loading, countReviwesFunction, CountReviews] = useState(true);
 
     const countPosts = async () => {
         try {
@@ -26,69 +27,25 @@ const Dashboard = ({ user, userId }) => {
             });
             setCountposts(response.data);
         } catch (error) {
-            setError(error.message);
+            console.error("Error fetching data:", error);
+            setError("Failed to load  data. Please try again.");
         }
     };
 
-    // Function to count reviews
-   
 
     useEffect(() => {
         countPosts();
         countCarts()
-       countReviwesFunction();
+       countReviwes();
     }, [userId]);
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-gray-50 pt-20">
-                <div className="container mx-auto px-4">
-                    <div className="flex flex-col lg:flex-row gap-8">
-                        {/* Sidebar Skeleton */}
-                        <div className="lg:w-72 lg:fixed h-full">
-                            <div className="bg-white rounded-xl shadow-sm p-6">
-                                <Skeleton circle height={80} width={80} className="mx-auto mb-4" />
-                                <Skeleton height={20} width={150} className="mx-auto mb-2" />
-                                <Skeleton height={16} width={200} className="mx-auto mb-6" />
-
-                                <div className="space-y-4">
-                                    {[...Array(4)].map((_, i) => (
-                                        <div key={i} className="flex justify-between items-center">
-                                            <Skeleton height={16} width={120} />
-                                            <Skeleton height={16} width={30} />
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Main Content Skeleton */}
-                        <div className="lg:ml-80 flex-1">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {[...Array(4)].map((_, i) => (
-                                    <div key={i} className="bg-white rounded-xl shadow-sm p-4">
-                                        <Skeleton height={180} className="mb-4 rounded-lg" />
-                                        <Skeleton height={20} width="80%" className="mb-2" />
-                                        <Skeleton height={16} count={2} className="mb-3" />
-                                        <Skeleton height={12} width="60%" />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Categories Skeleton */}
-                        <div className="hidden lg:block w-72">
-                            <div className="bg-white rounded-xl shadow-sm p-6">
-                                <Skeleton height={24} width={120} className="mb-4" />
-                                {[...Array(5)].map((_, i) => (
-                                    <Skeleton key={i} height={16} className="mb-2" />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <LoadingSpinner/>
         );
+    }
+    if(error){
+        return (<ErrorMessage error={error} />)
     }
 
     return (
@@ -129,7 +86,7 @@ const Dashboard = ({ user, userId }) => {
                                         </span>
                                     </a>
                                     <a
-                                        href={`/customerreviews/${user?._id}`}
+                                        href={'/customerreviews'}
                                         className="flex justify-between items-center hover:bg-gray-50 p-1 rounded-lg transition"
                                     >
                                         <span className="text-gray-600">Customer Reviews</span>
@@ -161,13 +118,7 @@ const Dashboard = ({ user, userId }) => {
                     </div>
 
                     <div className="lg:ml-80 flex-1">
-                        {error && (
-                            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-r-lg">
-                                <p className="text-red-700">{error}</p>
-                            </div>
-                        )}
-
-                        <AllPosts user={user} />
+                                               <AllPosts user={user} />
                     </div>
 
                     <div className="hidden lg:block w-72">

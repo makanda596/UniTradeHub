@@ -7,7 +7,8 @@ import Swal from "sweetalert2";
 import Navbar from "../components/Navbar";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { FaTrash, FaEdit, FaRegClock, FaUser, FaShareAlt } from "react-icons/fa"; // Import FaShareAlt
+import { FaTrash, FaEdit, FaRegClock, FaUser, FaShareAlt } from "react-icons/fa"; 
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Myposts = () => {
     const [user, setUser] = useState(null);
@@ -26,7 +27,6 @@ const Myposts = () => {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setUser(response.data);
-                console.log(response.data);
                 setPosts(response.data.posts || []);
             } catch (error) {
                 setError(error.message);
@@ -117,52 +117,7 @@ const Myposts = () => {
     };
 
     if (loading) return (
-        <>
-            <Navbar />
-            <div className="min-h-screen bg-gray-50 pt-20">
-                <div className="container mx-auto px-4 py-8">
-                    <div className="flex flex-col md:flex-row gap-8">
-                        {/* Profile Skeleton */}
-                        <div className="w-full md:w-1/4">
-                            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-                                <Skeleton height={150} className="w-full" />
-                                <div className="p-6 flex flex-col items-center">
-                                    <Skeleton circle height={96} width={96} className="-mt-16 mb-4" />
-                                    <Skeleton height={24} width={150} className="mb-2" />
-                                    <Skeleton height={16} width={200} className="mb-1" />
-                                    <Skeleton height={16} width={180} />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Posts Skeleton */}
-                        <div className="w-full md:w-3/4">
-                            <Skeleton height={32} width={200} className="mb-6" />
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {[...Array(4)].map((_, i) => (
-                                    <div key={i} className="bg-white rounded-xl shadow-sm p-4">
-                                        <div className="flex justify-between mb-4">
-                                            <div className="flex items-center">
-                                                <Skeleton circle height={40} width={40} />
-                                                <div className="ml-3">
-                                                    <Skeleton height={16} width={100} />
-                                                    <Skeleton height={12} width={120} className="mt-1" />
-                                                </div>
-                                            </div>
-                                            <Skeleton height={32} width={80} />
-                                        </div>
-                                        <Skeleton height={20} width="70%" className="mb-3" />
-                                        <Skeleton count={2} className="mb-4" />
-                                        <Skeleton height={12} width="40%" />
-                                        <Skeleton height={180} className="mt-4 rounded-lg" />
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </>
+      <LoadingSpinner/>
     );
 
     if (error) return (
@@ -195,7 +150,7 @@ const Myposts = () => {
                         </div>
 
                         {posts.length > 0 ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                                 {posts.map((post) => (
                                     <div key={post._id} className="border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition">
                                         <div className="relative">

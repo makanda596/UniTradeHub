@@ -7,4 +7,4 @@ const router = express.Router()
 router.post('/makeReport/:reportedId', verifyToken, makeReport)
 router.post('/postReport/:postId', verifyToken, postReport)
 
-export default router;
+export default router; 

@@ -2,6 +2,7 @@ import { Post } from "../models/postModel.js"
 import { Report } from "../models/Report.js"
 import { User } from "../models/userModels.js"
 import ReportedPost from '../models/ReportedPost.js'
+import { Alert } from "../models/Alert.js"
 //MAKING OF A REPORT OF A USER
 export const makeReport = async (req,res)=>{
     const { reportedId }= req.params
@@ -61,6 +62,12 @@ export const makeReport = async (req,res)=>{
                 return res.json({message:"please log in"})
             }
 
+            //sending the alert message to the admin
+            const alert = new Alert({
+                message:"new post reported",
+                type:"post"
+            })
+            await alert.save()
             const newReportedPost = new ReportedPost({
                 postId,userId,reason
             })

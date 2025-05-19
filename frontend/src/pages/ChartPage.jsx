@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import Conversation from '../components/Conversation';
+import LoadingSpinner from '../components/LoadingSpinner'
 import { Link, useParams } from 'react-router-dom';
+import ErrorMessage from '../components/ErrorMessage';
 
 const ChatPage = () => {
     const { id: receiverId } = useParams();
@@ -117,20 +118,12 @@ const ChatPage = () => {
     });
 
     if (loading) {
-        return <div className="flex justify-center items-center h-screen">Loading users...</div>;
+        return <LoadingSpinner/>
     }
 
     if (error) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                <div className="text-red-500">Error: {error}</div>
-                <button
-                    onClick={fetchUsers}
-                    className="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                >
-                    Retry
-                </button>
-            </div>
+            <ErrorMessage error={error}/>
         );
     }
 

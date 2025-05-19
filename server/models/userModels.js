@@ -14,10 +14,8 @@ const UserSchema = new mongoose.Schema({
     posts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
     gender: { type: String, required: true, enum: ["male", "female"] },
     profilepic: { type: String, default: "" },
-
     cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Cart" }], 
     reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
-
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "Following" }],
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Following" }],  
     reports:[{type:mongoose.Schema.Types.ObjectId, ref:"Report"}],
@@ -26,7 +24,9 @@ const UserSchema = new mongoose.Schema({
     verificationCodeExpires: Date,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
-    lastLogin :{type:Date}
+    lastLogin :{type:Date},
+    limits:{type:Number, default:"0"},
+    limitUntil:{type:Date}
 }, { timestamps: true });
 
 export const User = mongoose.model("User", UserSchema);

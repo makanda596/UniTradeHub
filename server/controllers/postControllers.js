@@ -24,7 +24,7 @@ export const createPost = async (req, res) => {
             category,
             image: uploadResponse.secure_url,
             createdBy: existingUser._id,
-        });
+        }); 
 
         const savedPost = await post.save();
         existingUser.posts.push(savedPost._id);

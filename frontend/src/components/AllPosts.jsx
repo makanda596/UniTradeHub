@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Post from "../components/Post.jsx";
 import moment from "moment";
-import { Link, useParams } from "react-router-dom";
+import { Link} from "react-router-dom";
 import FollowButton from "./FollowButton.jsx";
 import ReportPost from "./ReportPost.jsx";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { MdCancel } from "react-icons/md";
+import LoadingSpinner from "./LoadingSpinner.jsx";
 const AllPosts = ({ user }) => {
     const [selectedPost, setSelectedPost] = useState({ id: null, name: '' });
     const [posts, setPosts] = useState([]);
     const [openTab, setOpenTab]=useState(false)
     const [openPostId, setOpenPostId] = useState(null);
+    const [loading ,setLoading]= useState(true)
 
     const [isCreating, setIsCreating] = useState(false);
     const defaultAvatar = "https://via.placeholder.com/50";
@@ -37,12 +39,17 @@ const AllPosts = ({ user }) => {
         const fetchPosts = async () => {
             try {
                 const token = localStorage.getItem("token")
+                if(!token){
+                    setLoading(false)
+                }
                 const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/posts/allposts`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 setPosts(response.data);
             } catch (err) {
                 console.error("Failed to fetch posts", err);
+            }finally{
+                setLoading(false)
             }
         };
         fetchPosts();
@@ -59,7 +66,9 @@ const AllPosts = ({ user }) => {
         setOpenTab(false)
     };
    
-    
+    if(loading){
+        return <LoadingSpinner />
+    }
 
     return (
         <div className="flex flex-col flex-1 max-w-xl mx-auto mt-0">

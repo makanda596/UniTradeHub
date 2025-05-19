@@ -5,72 +5,112 @@ import jwt from "jsonwebtoken";
 import { Post } from "../models/postModel.js";
 import { sendEmail, sendRestPasswordConfirmationEmail, sendConfirmationEmail, sendEmailVerification } from "../utilis/sendEmail.js";
 import dotenv from 'dotenv';
+import { Suspended } from "../models/SuspendedModel.js";
+import { Alert } from "../models/Alert.js";
 dotenv.config();
+import { validationResult } from 'express-validator';
+
 
 //SIGN UP SECTION
+
 export const signup = async (req, res) => {
     try {
-        const { username, email, phoneNumber, gender, password, bio, location } = req.body;
-        if (!username || !email || !phoneNumber || !gender || !password) {
-            return res.status(400).json({ message: 'All fields are required' });
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({
+                message: 'please check your inputs',
+                errors: errors.array(),
+            });
         }
+
+        const { username, email, phoneNumber, gender, password, bio, location } = req.body;
+
+        if (!['male', 'female'].includes(gender.toLowerCase())) {
+            return res.status(400).json({ message: "Gender must be either 'male' or 'female'" });
+        }
+
         if (password.length < 8) {
             return res.status(400).json({ message: "Password must be at least 8 characters long" });
         }
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: 'User already exists' });
+
+        if (phoneNumber.length < 10) {
+            return res.status(400).json({ message: "Phone number must be at least 10 digits" });
         }
-        const existingPhone = await User.findOne({ phoneNumber });
+
+        const [existingEmail, existingPhone, existingUsername] = await Promise.all([
+            User.findOne({ email }),
+            User.findOne({ phoneNumber }),
+            User.findOne({ username }),
+        ]);
+
+        if (existingEmail) {
+            return res.status(409).json({ message: "An account with this email already exists" });
+        }
+
         if (existingPhone) {
-            return res.status(400).json({ message: 'phoneNumber already taken' });
+            return res.status(409).json({ message: "Phone number is already registered" });
         }
-       if(phoneNumber.length <10){
-        return res.status(400).json({message:"invalid phone number"})
-       }
-        const existingUsername = await User.findOne({ username });
+
         if (existingUsername) {
-            return res.status(400).json({ message: 'Username already exists please try another ' });
+            return res.status(409).json({ message: "Username is already taken" });
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10)
-        const boyprofilepic = (`https://avatar.iran.liara.run/public/boy?username=${username}`)
-        const girlprofilepic = (`https://avatar.iran.liara.run/public/girl?username=${username}`)
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const profilepic = gender.toLowerCase() === 'male'
+            ? `https://avatar.iran.liara.run/public/boy?username=${username}`
+            : `https://avatar.iran.liara.run/public/girl?username=${username}`;
 
-        //sending of verification code
-        const verificationCodeExpires = Date.now() + 15 * 60 * 1000;
-        const verificationCode = crypto.randomBytes(2).toString("hex")
+        const verificationCode = crypto.randomBytes(2).toString("hex");
+        const verificationCodeExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
 
-        //saving the user            
         const user = new User({
             username,
             email,
             phoneNumber,
+            gender,
+            password: hashedPassword,
             bio: bio || "",
             location: location || "",
-            password: hashedPassword,
-            gender,
-            profilepic: gender === "male" ? boyprofilepic : girlprofilepic,
-            verificationCode: verificationCode,
-            verificationCodeExpires: verificationCodeExpires,
+            profilepic,
+            verificationCode,
+            verificationCodeExpires,
         });
 
         await user.save();
-        await sendEmailVerification(email, verificationCode)
 
-        res.status(200).json({
-            message: "User signed up",
+        try {
+            await sendEmailVerification(email, verificationCode);
+        } catch (emailError) {
+            console.error("Failed to send email:", emailError);
+            return res.status(500).json({ message: "User created but failed to send verification email" });
+        }
+
+        try {
+            const alert = new Alert({
+                message: "New user signed up",
+                type: "user",
+            });
+            await alert.save();
+            console.log("Admin alert:", alert);
+        } catch (alertError) {
+            console.warn("User created but failed to save alert:", alertError);
+        }
+
+        res.status(201).json({
+            message: "User signed up successfully",
             user: {
                 ...user._doc,
-                password: undefined,
+                password: undefined, 
             },
         });
 
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ error: 'Server error' });
+    } catch (err) {
+        console.error("Signup Error:", err);
+        res.status(500).json({ message: "Internal server error" });
     }
-}
+};
+
+
 
 //EMAIL VERIFICATION RESEND CODE
 
@@ -112,7 +152,7 @@ export const EmailVerificationResend = async (req, res) => {
     }
 };
 
-//EMAIL VERIFICATION
+//EMAIL VERIFICATION 
 export const EmailVerification = async (req, res) => {
     const { code } = req.body
     try {
@@ -139,17 +179,34 @@ export const EmailVerification = async (req, res) => {
 
 // LPGIN SECTION
 export const login = async (req, res) => {
+     const generateToken = (id) => {
+            try {  
+                const token = jwt.sign({ id }, process.env.SECRET_KEY, { expiresIn: "1d" });
+    
+                res.cookie("token", token, {
+                    sameSite: "Strict",
+                    httpOnly: true,
+                    secure: true,
+                });
+    
+                return token; // ✅ Important to return the token
+            } catch (error) {
+                console.error("Token generation failed:", error.message);
+                throw new Error("Token generation failed");
+            }
+        };
     const { email, password } = req.body;
-    const generateToken = (id) => {
-        return jwt.sign({ id }, process.env.SECTRET_KEY, { expiresIn: "1d" })
-    }
+   
     try {
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(404).json({ message: "Invalid email address" });
         }
+        const suspended = await Suspended.findOne({email})
+        if(suspended){
+            return res.status(401).json({message:"this is account has been suspended"})
+        }
 
-        // Check if user is verified
         if (!user.isVerified) {
             return res.status(403).json({
                 message: "Please verify your email first",
@@ -160,8 +217,15 @@ export const login = async (req, res) => {
 
         const isPasswordCorrect = await bcrypt.compare(password, user.password);
         if (!isPasswordCorrect) {
+            user.limits +=1;
+            if(user.limits >= 3){
+                user.limitUntil = new Date(Date.now() + 1*60 *1000)
+            }
+            await user.save()
             return res.status(400).json({ message: "Incorrect password" });
         }
+        user.limits = 0,
+            user.limitUntil=null
         user.lastLogin = new Date()
         await user.save()
         res.status(200).json({

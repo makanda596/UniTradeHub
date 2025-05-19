@@ -28,6 +28,8 @@ import Terms from "./pages/Terms.jsx";
 import Contact from "./pages/Contact.jsx";
 import AdminHome from "./pages/admin/AdminHome.jsx";
 import Safety from "./pages/Safety.jsx";
+import { AdminAuthStore } from "./utilis/admin.js";
+import LoadingSpinner from "./components/LoadingSpinner.jsx";
 
 
 const ProtectedRoute = ({ children }) => {
@@ -49,10 +51,28 @@ const RedirectAuthenticatedUser = ({ children }) => {
   return children;
 };
 
+//admin
+const AdminProtectedRoute = ({ children }) => {
+  const { isAuthenticated, isCheckingAuth } = AdminAuthStore();
+
+  // While still checking if admin is logged in, show a loading spinner
+  if (isCheckingAuth) {
+    return (<LoadingSpinner/>);
+  }
+
+  // If admin is NOT authenticated, redirect to login
+  if (!isAuthenticated) {
+    return <Navigate to="/adminLogin" replace />;
+  }
+
+  // If admin is authenticated, show the protected content
+  return children;
+};
 function App() {
   const location = useLocation()
   const [user, setUser] = useState(null);
   const { logout, isCheckingAuth, checkAuth } = useAuthStore();
+  const {adminCheckAuth} = AdminAuthStore()
 
   useEffect(() => {
     if (location.pathname !== '/EmailVerification') {
@@ -79,14 +99,11 @@ function App() {
 
     fetchUser();
     checkAuth();
-  }, [checkAuth]);
+    adminCheckAuth()
+  }, [checkAuth, adminCheckAuth]);
 
   if (isCheckingAuth) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-16 h-16 border-4 border-t-red-600 border-b-green-600 border-l-white border-r-white rounded-full animate-spin"></div>
-      </div>
-    );
+    return (<LoadingSpinner /> );
   }
 
   return (
@@ -119,7 +136,10 @@ function App() {
         <Route path="/saved" element={<ProtectedRoute><SavedPost user={user} /></ProtectedRoute>} />
         <Route path="/customerreviews" element={<ProtectedRoute><Reviewspage user={user} /></ProtectedRoute>} />
         <Route path="/category/:categoryName" element={<CategoryDetails user={user} />} />
-        <Route path='/admin' element={<ProtectedRoute><AdminHome /></ProtectedRoute>}/>
+
+
+        {/* //admin section */}
+      <Route path='/admindashboard' element={<AdminProtectedRoute><AdminHome /></AdminProtectedRoute>}/>
        
       </Routes>
   
