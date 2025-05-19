@@ -221,10 +221,7 @@ export const login = async (req, res) => {
         await user.save()
         res.status(200).json({
             message: "User logged in",
-            user: {
-                ...user._doc,
-                password: undefined,
-            },
+        
             token: generateToken(user._id)
         });
 
