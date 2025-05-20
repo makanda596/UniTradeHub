@@ -96,7 +96,7 @@ export const signup = async (req, res) => {
             console.warn("User created but failed to save alert:", alertError);
         }
 
-        res.status(201).json({
+        res.status(200).json({
             message: "User signed up successfully",
            
         });
