@@ -59,7 +59,7 @@ const GetFlash = () => {
                     <p className="text-gray-500 text-sm">No active deals</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-3 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                <div className="grid grid-cols-4 xs:grid-cols-4 sm:grid-cols-4 md:grid-cols-3 gap-2">
                     {activeFlash.map(item => (
                         <div
                             key={item._id}
