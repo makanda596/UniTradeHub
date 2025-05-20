@@ -38,7 +38,6 @@ const GetFlash = () => {
             const timer = setTimeout(() => {
                 setTimeLeft(calculateTimeLeft())
             }, 1000)
-
             return () => clearTimeout(timer)
         })
 
@@ -53,21 +52,20 @@ const GetFlash = () => {
     }
 
     return (
-        <div className="mt-4 px-2 sm:px-4">
+        <div className="mt-4 px-3 sm:px-4">
             {activeFlash.length === 0 ? (
                 <div className="text-center py-8">
                     <FiZap className="text-gray-400 mx-auto mb-3" size={28} />
                     <p className="text-gray-500 text-sm">No active deals</p>
                 </div>
             ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-3 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {activeFlash.map(item => (
                         <div
                             key={item._id}
-                            className="relative bg-white rounded-lg border border-gray-100"
+                            className="relative bg-white rounded-lg border border-gray-100 shadow-sm transition-all duration-300 hover:shadow-md"
                         >
-                            {/* Seller Info */}
-                            <div className="flex items-center p-3">
+                            <div className="flex items-center p-1">
                                 <div className="relative">
                                     <img
                                         src={item?.createdBy?.profilepic}
@@ -80,12 +78,12 @@ const GetFlash = () => {
                                     <p className="text-sm font-medium text-gray-900">
                                         {item?.createdBy?.username || "Seller"}
                                     </p>
-                                    <CountdownTimer expiresAt={item.expiresAt} />
+                                    {/* <CountdownTimer expiresAt={item.expiresAt} /> */}
                                 </div>
                             </div>
 
                             {/* Flash Image */}
-                            <div className="aspect-square bg-gray-50">
+                            <div className="aspect-square bg-gray-50 overflow-hidden rounded-b-md">
                                 <img
                                     src={item.image}
                                     alt="flash"
@@ -98,7 +96,6 @@ const GetFlash = () => {
                                 <p className="text-gray-600 text-sm mb-2 line-clamp-2">
                                     {item?.description}
                                 </p>
-                              
                             </div>
                         </div>
                     ))}
