@@ -29,7 +29,6 @@ const Contact = () => {
     <div>
       <GuestNavbar/>
     <div className="min-h-screen bg-white text-gray-800 px-6 py-12 max-w-7xl mx-auto">
-      {/* Header */}
       <motion.div
         initial="hidden"
         whileInView="visible"
@@ -44,13 +43,14 @@ const Contact = () => {
           Have a question, suggestion, or need support? We’d love to hear from you.
         </p>
       </motion.div>
+      
 
       {/* Contact Info */}
       <div className="grid md:grid-cols-3 gap-8 mb-16">
         <div className="bg-blue-50 p-6 rounded-2xl shadow hover:shadow-md transition">
           <FiMail className="text-blue-600 text-2xl mb-4" />
           <h3 className="font-semibold text-lg mb-2">Email</h3>
-          <p className="text-sm text-gray-600">support@unitradehub.com</p>
+          <p className="text-sm text-gray-600">unitradeh@gmail.com</p>
         </div>
         <div className="bg-purple-50 p-6 rounded-2xl shadow hover:shadow-md transition">
           <FiPhone className="text-purple-600 text-2xl mb-4" />

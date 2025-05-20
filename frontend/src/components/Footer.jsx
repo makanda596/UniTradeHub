@@ -24,7 +24,7 @@ const Footer = () => {
                         <li><a href="#" className="hover:underline">FAQs</a></li>
                     </ul>
                 </div>
-                <div>
+                {/* <div>
                     <h3 className="text-white font-semibold mb-2">Stay Connected</h3>
                     <form className="flex flex-col gap-2">
                         <input
@@ -36,7 +36,7 @@ const Footer = () => {
                             Subscribe
                         </button>
                     </form>
-                </div>
+                </div> */}
             </div>
 
             <div className="border-t border-gray-700 mt-10 pt-6 text-center text-sm">

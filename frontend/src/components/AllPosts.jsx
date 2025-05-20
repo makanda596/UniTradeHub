@@ -82,13 +82,12 @@ const AllPosts = ({ user }) => {
 
     return (
         <div className="flex flex-col flex-1 max-w-xl mx-auto mt-0">
-            {/* Create Post Section */}
-            <div className="flex gap-4 items-center bg-white p-4">
-                <img src={user?.profilepic || defaultAvatar} className="w-12 h-12 rounded-full object-cover" />
+            <div className="flex gap-4 items-center bg-white p-2">
+                <img src={user?.profilepic || defaultAvatar} className="w-10 h-10 rounded-full object-cover" />
                 {!isCreating ? (
                     <button
                         onClick={() => setIsCreating(true)}
-                        className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+                        className="flex-1 bg-blue-600 text-white py-1 rounded-lg hover:bg-blue-700"
                     >
                         Make a Post
                     </button>
@@ -97,42 +96,40 @@ const AllPosts = ({ user }) => {
                 )}
             </div>
 
-            {/* Flash Section */}
-            <div className="p-2 mt-2 w-full bg-white">
-                <div className="flex gap-4 overflow-x-auto items-start">
-                    <div className="relative flex flex-col items-center min-w-[100px]">
-                        {/* Profile Picture - Overlapping top */}
-                        <img
-                            src={user?.profilepic || defaultAvatar}
-                            alt="You"
-                            className="w-16 h-16 absolute -top-4 rounded-full border-4 border-blue-600 object-cover shadow-md z-10"
-                        />
-
-                        {/* Flash Content Section */}
-                        <div className="mt-14 w-full flex flex-col items-center text-center">
+            <div className="p-1 mt-1 w-full bg-white">
+                <p className="font-bold text-black text-md">flash sales</p>
+                <div className="flex gap-1 overflow-x-auto items-start">
+                    <div className="relative flex flex-col items-center min-w-[70px]">
+                                                <div className="mt-0 w-full flex flex-col items-center text-center">
                             {activeFlash.length > 0 ? (
                                 activeFlash.map((item) => (
                                     <div
                                         key={item._id}
-                                        className="mt-3 w-40 bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden transition hover:shadow-lg"
+                                        className="mt-1 w-20 bg-white border border-gray-200 rounded-xl shadow-md overflow-hidden transition hover:shadow-lg"
                                     >
-                                        <img
-                                            src={item.image}
-                                            alt="Flash"
-                                            className="h-24 w-full object-cover"
-                                        />
-                                        <div className="p-2">
-                                            <p className="text-sm font-medium">{item.description}</p>
-                                            <p className="text-[11px] text-gray-400 mt-1">
-                                                Expires: {new Date(item.expiresAt).toLocaleString()}
-                                            </p>
+                                        <div className="relative">
+                                            <img
+                                                src={item.image}
+                                                alt="Flash"
+                                                className="h-34 w-full object-cover"
+                                            />
+                                            
                                         </div>
+                                           
+                                            {/* <button
+                                                onClick={() => setIsFlashing(true)}
+                                                className="mt-0 self-end  text-black-500 text-xl h-6  "
+                                                title="Create New Flash"
+                                            >
+                                                +
+                                            </button> */}
+
                                     </div>
                                 ))
                             ) : !isFlashing ? (
                                 <button
                                     onClick={() => setIsFlashing(true)}
-                                    className="mt-4 bg-blue-600 text-white text-sm px-4 py-2 rounded-full shadow hover:bg-blue-700 transition"
+                                    className="mt-6 bg-blue-600 text-white text-xs px-4 py-1.5 rounded-full shadow hover:bg-blue-700 transition"
                                 >
                                     Flash
                                 </button>
@@ -142,14 +139,13 @@ const AllPosts = ({ user }) => {
                         </div>
                     </div>
 
-                      
-
-                    <GetFlash />
+                    <div className="flex-1">
+                        <GetFlash />
+                    </div>
                 </div>
             </div>
 
-            {/* All Posts Section */}
-            <div className="py-6 bg-gray-100">
+            <div className="py-1 bg-gray-100">
                 <h1 className="text-xl font-bold text-gray-800 mb-2 ml-6">All Posts</h1>
                 <ul className="space-y-4">
                     {posts.length > 0 ? (

@@ -243,26 +243,34 @@ export const logout = async (req, res) => {
 };
 //GETTING ALL THE USERS
 export const getUsers = async (req, res) => {
-    const userId = req.user.id
+    const userId = req.user.id;
     try {
-        const users = await User.find({ _id: { $ne: userId } }).select("-password").sort({ createdAt: -1 })
-        if (!users) {
-            return res.status(400).json({ message: "no user found" })
+        const publicUserFields = "username profilepic ";
+
+        const users = await User.find({ _id: { $ne: userId } })
+            .select(publicUserFields)
+            .lean()
+            .sort({ createdAt: -1 });
+
+        if (!users || users.length === 0) {
+            return res.status(404).json({ message: "No users found" });
         }
-        res.status(200).json(users)
+
+        res.status(200).json(users);
     } catch (error) {
-        res.status(400).json(error.message)
+        res.status(500).json({ message: error.message });
     }
-}
+};
+
 //USER PROFILE
 export const profile = async (req, res) => {
     try {
 
-        const user = await User.findById(req.user.id).select("-password").populate("cart", "postId")
+        const user = await User.findById(req.user.id).select(" -password").populate("cart", "postId")
         if (!user) {
             res.status(400).json({ message: "not authoticated" })
         }
-        res.status(200).json({ mesage: "user info", user })
+        res.status(200).json({ mesage: "user information",user})
     } catch (error) {
 
     }

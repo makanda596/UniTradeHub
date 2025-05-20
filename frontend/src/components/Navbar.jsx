@@ -11,13 +11,14 @@ import {
 import { FiUser, FiSettings, FiLogOut } from "react-icons/fi";
 import Logout from '../components/Logout.jsx';
 import axios from "axios";
+import { MdFlashOn } from "react-icons/md";
 import { useAuthStore } from "../utilis/auth.js";
 
 const Navbar = ({ logout }) => {
       const [user, setUser] = useState(null);
-        const [isOpen, setIsOpen] = useState(false); // For mobile menu
-    const [searchOpen, setSearchOpen] = useState(false); // For search bar
-    const [userDropdownOpen, setUserDropdownOpen] = useState(false); // For user dropdown
+        const [isOpen, setIsOpen] = useState(false); 
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [userDropdownOpen, setUserDropdownOpen] = useState(false); 
     const searchRef = useRef(null);
     const { countCarts, count, countReviwes, CountReviews }= useAuthStore()
     const userDropdownRef = useRef(null); 
@@ -98,7 +99,10 @@ const Navbar = ({ logout }) => {
                 </div>
 
                 <div className="flex items-center space-x-4">
-                    
+                    {/* <Link to="/flashsales" className="relative text-gray-700 hover:text-yellow-600">
+                        <p>flassSales</p>
+                    </Link> */}
+
                     <Link to='/customerreviews' className="relative inline-block">
                         <IoNotifications size={24} />
                         {CountReviews > 0 && (

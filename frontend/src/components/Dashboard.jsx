@@ -49,7 +49,7 @@ const Dashboard = ({ user, userId }) => {
     }
 
     return (
-        <div className="min-h-screen w-full bg-gray-100 pt-14 lg:pt-20">
+        <div className="min-h-screen w-full bg-gray-100 pt-14 lg:pt-16">
             <div className="container mx-auto px-0 md:px-4">
                 <div className="flex flex-col lg:flex-row gap-8">
                     <div className="hidden lg:flex lg:w-72 lg:fixed h-full ">

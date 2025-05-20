@@ -17,7 +17,7 @@ export const postFlash = async (req, res) => {
         }
 
         const uploadResponse = await cloudinary.uploader.upload(image);
-        const expiring = new Date(Date.now()+24*60*60*1000)
+        const expiring = new Date(Date.now()+48*60*60*1000)
 
         const flash = new Flashsale({
             description,

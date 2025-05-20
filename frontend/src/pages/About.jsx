@@ -8,6 +8,17 @@ import {
   FiArrowRight,
 } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import {
+  FiUserPlus,
+  FiUser,
+  FiSearch,
+  FiHeart,
+  FiTag,
+  FiMessageCircle,
+  FiStar,
+  FiRepeat,
+} from 'react-icons/fi';
+
 import market from '../assets/market.avif';
 import GuestNavbar from '../components/GuestNavbar';
 import Footer from '../components/Footer';
@@ -64,6 +75,90 @@ const About = () => {
             </div>
           </motion.div>
         </motion.div>
+
+     
+          {/* How to Use Unitrade Hub */}
+          <motion.div
+            variants={slideUp}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="my-20"
+          >
+            <h2 className="text-xl font-bold text-center mb-8 bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              How to Get Started on Unitrade Hub
+            </h2>
+
+            <div className="grid md:grid-cols-2 gap-8 text-gray-700">
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <FiUserPlus className="text-purple-600 text-3xl mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">1️⃣ Register / Log In</h3>
+                    <p>Visit the platform and sign up with your Moi University email. If you already have an account, simply log in.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <FiUser className="text-purple-600 text-3xl mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">2️⃣ Set Up Your Profile</h3>
+                    <p>Complete your profile with a photo, description, and contact details to help build trust.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <FiSearch className="text-purple-600 text-3xl mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">3️⃣ Explore the Marketplace</h3>
+                    <p>Browse categories like textbooks, electronics, fashion, and services — all posted by students like you.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <FiHeart className="text-purple-600 text-3xl mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">4️⃣ Follow Your Favorite Sellers</h3>
+                    <p>Tap “Follow” on sellers you trust. You’ll see their latest posts in your feed automatically.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <FiTag className="text-purple-600 text-3xl mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">5️⃣ Post a Flash Sale</h3>
+                    <p>Want to sell something fast? Use the “Post Flash Sale” feature to highlight limited-time deals.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <FiMessageCircle className="text-purple-600 text-3xl mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">6️⃣ Chat with Buyers & Sellers</h3>
+                    <p>Use the in-app chat to ask questions, negotiate prices, or confirm meetup details — all safely.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <FiStar className="text-purple-600 text-3xl mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">7️⃣ Rate & Review</h3>
+                    <p>After a transaction, leave feedback to help others identify trustworthy users.</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4">
+                  <FiRepeat className="text-purple-600 text-3xl mt-1" />
+                  <div>
+                    <h3 className="font-semibold text-gray-900">8️⃣ Keep Trading!</h3>
+                    <p>There’s always something new. Stay active, follow more sellers, and enjoy a smarter campus marketplace.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
 
         {/* Mission & Vision */}
         <div className="grid md:grid-cols-2 gap-4 mb-24">
@@ -134,7 +229,6 @@ const About = () => {
           </div>
         </motion.div>
 
-        {/* CTA Section */}
         <motion.div
           variants={slideUp}
           initial="hidden"
