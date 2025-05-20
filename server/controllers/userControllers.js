@@ -24,7 +24,7 @@ export const signup = async (req, res) => {
             });
         }
 
-        const { username, email, phoneNumber, gender, password, bio, location } = req.body;
+        const { username, email, phoneNumber, gender, password } = req.body;
 
         if (!['male', 'female'].includes(gender.toLowerCase())) {
             return res.status(400).json({ message: "Gender must be either 'male' or 'female'" });
