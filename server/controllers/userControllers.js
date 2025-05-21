@@ -24,10 +24,6 @@ export const signup = async (req, res) => {
             });
         }
 
-<<<<<<< HEAD
-        // Only extract fields your frontend is sending
-=======
->>>>>>> a60994513f438eb176e74a5e386f19d27e54d707
         const { username, email, phoneNumber, gender, password } = req.body;
 
         // Basic validations
@@ -107,15 +103,15 @@ export const signup = async (req, res) => {
             console.warn("User created but failed to save alert:", alertError);
         }
 
-<<<<<<< HEAD
         // Respond success
-=======
->>>>>>> a60994513f438eb176e74a5e386f19d27e54d707
         res.status(200).json({
             message: "User signed up successfully",
             user:{
-                password:undefined,
-                ...user._doc
+                ...user._doc,
+                password: undefined,
+                username:undefined,
+                phoneNumber:undefined,
+                
                 
             }
         });
