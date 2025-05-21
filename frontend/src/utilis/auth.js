@@ -25,7 +25,7 @@ export const useAuthStore = create((set,get) => ({
         set({ isLoading: true, error: null });
         try {
             const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/auth/signup`, { username, email, phoneNumber, password,  gender});
-            set({ user: response.data.user, isLoading: false, isAuthenticated: true });
+            set({ user: response.data, isLoading: false, isAuthenticated: true });
            localStorage.setItem("email", response.data.user.email)
             get().connectSocket();
         } catch (error) {

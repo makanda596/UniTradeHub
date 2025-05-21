@@ -12,20 +12,22 @@ dotenv.config();
 import { validationResult } from 'express-validator';
 
 
-//SIGN UP SECTION
+
 
 export const signup = async (req, res) => {
     try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(422).json({
-                message: 'please check your inputs',
+                message: 'Please check your inputs',
                 errors: errors.array(),
             });
         }
 
-        const { username, email, phoneNumber, gender, password, bio, location } = req.body;
+        // Only extract fields your frontend is sending
+        const { username, email, phoneNumber, gender, password } = req.body;
 
+        // Basic validations
         if (!['male', 'female'].includes(gender.toLowerCase())) {
             return res.status(400).json({ message: "Gender must be either 'male' or 'female'" });
         }
@@ -38,6 +40,7 @@ export const signup = async (req, res) => {
             return res.status(400).json({ message: "Phone number must be at least 10 digits" });
         }
 
+        // Check for existing records
         const [existingEmail, existingPhone, existingUsername] = await Promise.all([
             User.findOne({ email }),
             User.findOne({ phoneNumber }),
@@ -56,22 +59,25 @@ export const signup = async (req, res) => {
             return res.status(409).json({ message: "Username is already taken" });
         }
 
+        // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Generate profile picture URL
         const profilepic = gender.toLowerCase() === 'male'
             ? `https://avatar.iran.liara.run/public/boy?username=${username}`
             : `https://avatar.iran.liara.run/public/girl?username=${username}`;
 
+        // Generate verification code
         const verificationCode = crypto.randomBytes(2).toString("hex");
-        const verificationCodeExpires = Date.now() + 15 * 60 * 1000; // 15 minutes
+        const verificationCodeExpires = Date.now() + 15 * 60 * 1000; // 15 mins
 
+        // Create user
         const user = new User({
             username,
             email,
             phoneNumber,
             gender,
             password: hashedPassword,
-            bio: bio || "",
-            location: location || "",
             profilepic,
             verificationCode,
             verificationCodeExpires,
@@ -79,6 +85,7 @@ export const signup = async (req, res) => {
 
         await user.save();
 
+        // Send verification email
         try {
             await sendEmailVerification(email, verificationCode);
         } catch (emailError) {
@@ -86,6 +93,7 @@ export const signup = async (req, res) => {
             return res.status(500).json({ message: "User created but failed to send verification email" });
         }
 
+        // Log new user alert
         try {
             const alert = new Alert({
                 message: "New user signed up",
@@ -96,9 +104,14 @@ export const signup = async (req, res) => {
             console.warn("User created but failed to save alert:", alertError);
         }
 
-        res.status(201).json({
+        // Respond success
+        res.status(200).json({
             message: "User signed up successfully",
-           
+            user:{
+                password:undefined,
+                ...user._doc
+                
+            }
         });
 
     } catch (err) {
@@ -106,6 +119,7 @@ export const signup = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
+
 //EMAIL VERIFICATION RESEND CODE
 export const EmailVerificationResend = async (req, res) => {
     const { email } = req.body;
